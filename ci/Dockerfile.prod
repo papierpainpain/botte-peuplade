@@ -1,6 +1,7 @@
-ARG TAG=latest
+ARG TAG
 FROM papierpain/botte-bot-env:${TAG}
 
+ARG TAG
 ENV BOTTE_VERSION=${TAG}
 ENV BOTTE_ENV=production
 ENV BOTTE_TOKEN=${BOTTE_TOKEN}
