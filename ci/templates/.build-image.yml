@@ -1,0 +1,21 @@
+variables:
+  TEMPLATE_DOCKER_USER: ""
+  TEMPLATE_DOCKER_TOKEN: ""
+  TEMPLATE_OPTIONS: ""
+  TEMPLATE_IMAGE: ""
+  TEMPLATE_VERSION: ""
+  TEMPLATE_DOCKERFILE: ""
+
+.build-image:
+  stage: build
+  tags:
+    - shell
+  before_script:
+    - docker login docker.io -u $TEMPLATE_DOCKER_USER -p $TEMPLATE_DOCKER_TOKEN
+  script:
+    - docker build $TEMPLATE_OPTIONS -t $TEMPLATE_IMAGE:$TEMPLATE_VERSION -t $TEMPLATE_IMAGE:latest -f $TEMPLATE_DOCKERFILE .
+    - docker push $TEMPLATE_IMAGE:$TEMPLATE_VERSION
+    - docker push $TEMPLATE_IMAGE:latest
+  after_script:
+    - docker logout
+    - docker image prune -af --filter "until=24h"
