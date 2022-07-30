@@ -1,67 +1,67 @@
-include: "/ci/templates/.build-image.yml"
+# include: "/ci/templates/.build-image.yml"
 
-variables:
-  IMAGE: $DOCKER_USER/$CI_PROJECT_NAME
-  VERSION:
-    value: "1.0.0-SNAPSHOT"
-    description: "Deploy version"
+# variables:
+#   IMAGE: $DOCKER_USER/$CI_PROJECT_NAME
+#   VERSION:
+#     value: "1.0.0-SNAPSHOT"
+#     description: "Deploy version"
 
-clear-running-bots:
-  stage: .pre
-  variables:
-    PLAYBOOK_NAME: uninstall_bots_botte.yml
-    ENVIROMENT: inventory
-    VARIABLES: ""
-  trigger:
-    project: nananas/ansible
-    branch: master
-    strategy: depend
+# clear-running-bots:
+#   stage: .pre
+#   variables:
+#     PLAYBOOK_NAME: uninstall_bots_botte.yml
+#     ENVIROMENT: inventory
+#     VARIABLES: ""
+#   trigger:
+#     project: nananas/ansible
+#     branch: master
+#     strategy: depend
 
-build-environment:
-  extends: .build-image
-  variables:
-    TEMPLATE_DOCKER_USER: $DOCKER_USER
-    TEMPLATE_DOCKER_TOKEN: $DOCKER_TOKEN
-    TEMPLATE_IMAGE: $IMAGE-env
-    TEMPLATE_VERSION: $VERSION
-    TEMPLATE_OPTIONS: ""
-    TEMPLATE_DOCKERFILE: ci/Dockerfile.prod-env
-  only:
-    changes:
-      - ci/Dockerfile.prod-env
-      - requirements.txt
-  needs:
-    - job: clear-running-bots
+# build-environment:
+#   extends: .build-image
+#   variables:
+#     TEMPLATE_DOCKER_USER: $DOCKER_USER
+#     TEMPLATE_DOCKER_TOKEN: $DOCKER_TOKEN
+#     TEMPLATE_IMAGE: $IMAGE-env
+#     TEMPLATE_VERSION: $VERSION
+#     TEMPLATE_OPTIONS: ""
+#     TEMPLATE_DOCKERFILE: ci/Dockerfile.prod-env
+#   only:
+#     changes:
+#       - ci/Dockerfile.prod-env
+#       - requirements.txt
+#   needs:
+#     - job: clear-running-bots
 
-build-botte:
-  extends: .build-image
-  variables:
-    TEMPLATE_DOCKER_USER: $DOCKER_USER
-    TEMPLATE_DOCKER_TOKEN: $DOCKER_TOKEN
-    TEMPLATE_IMAGE: $IMAGE
-    TEMPLATE_VERSION: $VERSION
-    TEMPLATE_OPTIONS: '--build-arg "TAG=$VERSION"'
-    TEMPLATE_DOCKERFILE: ci/Dockerfile.prod
-  needs:
-    - job: clear-running-bots
-    - job: build-environment
-      optional: true
+# build-botte:
+#   extends: .build-image
+#   variables:
+#     TEMPLATE_DOCKER_USER: $DOCKER_USER
+#     TEMPLATE_DOCKER_TOKEN: $DOCKER_TOKEN
+#     TEMPLATE_IMAGE: $IMAGE
+#     TEMPLATE_VERSION: $VERSION
+#     TEMPLATE_OPTIONS: '--build-arg "TAG=$VERSION"'
+#     TEMPLATE_DOCKERFILE: ci/Dockerfile.prod
+#   needs:
+#     - job: clear-running-bots
+#     - job: build-environment
+#       optional: true
 
-deploy-botte:
-  stage: deploy
-  variables:
-    PLAYBOOK_NAME: install_bots_botte.yml
-    ENVIROMENT: inventory
-    VARIABLES: "botte_version=$VERSION"
-  trigger:
-    project: nananas/ansible
-    branch: master
-    strategy: depend
-  needs:
-    - job: build-botte
+# deploy-botte:
+#   stage: deploy
+#   variables:
+#     PLAYBOOK_NAME: install_bots_botte.yml
+#     ENVIROMENT: inventory
+#     VARIABLES: "botte_version=$VERSION"
+#   trigger:
+#     project: nananas/ansible
+#     branch: master
+#     strategy: depend
+#   needs:
+#     - job: build-botte
 
-workflow:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'web' || $CI_PIPELINE_SOURCE == 'merge_request_event' || $CI_COMMIT_BRANCH == "master"
-      when: always
-    - when: never
+# workflow:
+#   rules:
+#     - if: $CI_PIPELINE_SOURCE == 'web' || $CI_PIPELINE_SOURCE == 'merge_request_event' || $CI_COMMIT_BRANCH == "master"
+#       when: always
+#     - when: never

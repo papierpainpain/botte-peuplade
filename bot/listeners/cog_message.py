@@ -2,6 +2,11 @@ from nextcord.ext import commands
 
 
 class CogMessage(commands.Cog):
+    """
+    Listener pour les messages
+    
+    C'est la partie inutile du bot, mais c'est pas mal <3
+    """
 
     def __init__(self, bot):
         self.bot = bot
@@ -31,7 +36,7 @@ class CogMessage(commands.Cog):
 
         if msg_lower.endswith("oui"):
             await message.reply('stiti !')
-#  or re.search(r'g+(?:\%00\%|)+u+(?:\%00\%|)+e+(?:\%00\%|)+u+(?:\%00\%|)+l+(?:\%00\%|)+e', msg_lower, re.I) != -1
+        
         if msg_lower.find("g u e u l e") != -1 or msg_lower.find("gueule") != -1:
             await message.reply('FERME TA GUEULE TOI !!!!')
 

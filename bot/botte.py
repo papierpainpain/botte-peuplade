@@ -5,7 +5,7 @@ from nextcord.ext import commands
 
 class Botte(commands.Bot):
     """
-    Constructeur de Botte
+    Classe principale du Botte
     """
 
     def __init__(self, intents):
@@ -14,22 +14,24 @@ class Botte(commands.Bot):
         self.add_commands()
         self.add_listeners()
 
-    """
-    Écouteurs
-    """
-
     async def on_ready(self):
+        """
+        Quand le bot est prêt
+        """
+
         print("Botte est en fonctionnement")
 
-    """
-    Commandes
-    """
-
     def add_commands(self):
+        """
+        Ajoute les commandes
+        """
 
         self.load_extension("bot.commands.cog_music")
         self.load_extension("bot.commands.cog_reaction")
 
     def add_listeners(self):
+        """
+        Ajoute les listeners
+        """
 
         self.load_extension("bot.listeners.cog_message")

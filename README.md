@@ -1,50 +1,37 @@
-# botte_bot
+# Botte LaPeuplade
 
-## Commands
+Fork du bot Botte pour **LaPeuplade**.
 
-**everyone**
+## Developpement
 
-- !mute @someone 
+Installer les requirements:
 
-  > Plus de messages pendant 5min
+```bash
+pip3 install -r requirements.txt
+```
 
-- !rename @someone [new_name]
+Lancer le bot:
 
-  > Renommer quelqu'un
+```bash
+python3 main.py
+```
 
-- !poup @someone
+## Commandes
 
-  > Réagir :poup: sur quelqu'un
+### Musique
 
-**esclaves**
+* **/play**: Balance le son ;
+* **/leave**: Allez ouste ! ;
+* **/resume**: Il est temps de reprendre du service ;
+* **/pause**: C'est l'heure de la sieste ;
+* **/skip**: Faut savoir changer de disque ;
+* **/clear**: Petit coup de karcher ;
+* **/queue**: Fait moi voir ce que t'as.
 
-- !prout
+### Reaction
 
-  > Répond à tout le monde "@everyone :dash:"
-
-- !debout @someone
-
-  > Spam quelqu'un en mp
-
-**loup-garou**
-
-- !start loup-garou
-
-  > Exécute une commande en ssh pour lancer le serveur loup-garou.
-
-- !stop loup-garou
-
-  > Exécute une commande en ssh pour arrêter le serveur loup-garou.
-
-**tavernier**
-
-- !start brewery
-
-  > Exécute une commande en ssh pour lancer le serveur.
-
-- !stop brewery
-
-  > Exécute une commande en ssh pour arrêter le serveur.
-
-
-
+* **/prout**: Prout ;
+* **/poop-add**: Pooper quelqu'un ;
+* **/poop-remove**: Dé-pooper quelqu'un ;
+* **/coeur-add**: Coeur sur toi ;
+* **/coeur-remove**: Je te quitte !
