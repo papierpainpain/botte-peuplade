@@ -1,5 +1,5 @@
 ARG TAG
-FROM papierpain/botte-bot-env:${TAG}
+FROM papierpain/botte-peuplade-env:${TAG}
 
 ARG TAG
 ENV BOTTE_VERSION=${TAG}

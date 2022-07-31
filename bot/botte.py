@@ -28,6 +28,7 @@ class Botte(commands.Bot):
 
         self.load_extension("bot.commands.cog_music")
         self.load_extension("bot.commands.cog_reaction")
+        self.load_extension("bot.commands.cog_loup_garou")
 
     def add_listeners(self):
         """

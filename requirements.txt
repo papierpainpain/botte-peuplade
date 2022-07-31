@@ -5,3 +5,4 @@ PyNaCl
 opuslib
 nextcord==2.0.0
 youtube-dl
+python-gitlab
