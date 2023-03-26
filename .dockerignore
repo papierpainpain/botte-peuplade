@@ -1,5 +1,4 @@
 ci/*
 .gitignore
 .gitlab-ci.yml
-config.ini
 README.md

@@ -4,13 +4,30 @@ Fork du bot Botte pour **LaPeuplade**.
 
 ## Developpement
 
-Installer les requirements:
+Installer les requirements :
 
 ```bash
 pip3 install -r requirements.txt
 ```
 
-Lancer le bot:
+Créer le fichier config.ini :
+
+```ini
+[BOT]
+VERSION=
+TOKEN=
+PREFIX=/
+GUILD_ID=
+MUSIC_CHANNEL=
+
+[GITLAB]
+URL=https://gitlab.papierpain.fr
+TOKEN=
+PROJECT_ID=
+LG_VERSION=
+```
+
+Lancer le bot :
 
 ```bash
 python3 main.py
