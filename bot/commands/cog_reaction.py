@@ -1,4 +1,4 @@
-from discord import SlashOption
+from nextcord import SlashOption
 import nextcord
 from nextcord import Interaction
 from nextcord import User

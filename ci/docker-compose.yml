@@ -10,10 +10,6 @@ services:
       - BOTTE_PREFIX=/
       - BOTTE_MUSIC_CHANNEL=${BOT_MUSIC_CHANNEL}
       - BOTTE_GUILD_ID=${BOT_GUILD_ID}
-      - GITLAB_URL=${CI_SERVER_URL}
-      - GITLAB_TOKEN=A
-      - GITLAB_PROJECT_ID=0
-      - GITLAB_LG_VERSION=${VERSION}
     deploy:
       mode: replicated
       replicas: 1

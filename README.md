@@ -19,12 +19,6 @@ TOKEN=
 PREFIX=/
 GUILD_ID=
 MUSIC_CHANNEL=
-
-[GITLAB]
-URL=https://gitlab.papierpain.fr
-TOKEN=
-PROJECT_ID=
-LG_VERSION=
 ```
 
 Lancer le bot :

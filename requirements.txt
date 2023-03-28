@@ -3,5 +3,5 @@
 pip
 PyNaCl
 opuslib
-nextcord==2.0.0
-youtube-dl
+nextcord==2.4.1
+yt-dlp==2023.3.4

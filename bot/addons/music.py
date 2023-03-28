@@ -1,11 +1,10 @@
-import youtube_dl
-ytdl = youtube_dl.YoutubeDL()
-
+import yt_dlp
+ydl = yt_dlp.YoutubeDL({ 'format': 'bestaudio/best' })
 
 class Music:
     def __init__(self, link):
-        music = ytdl.extract_info(link, download=False)
-        music_format = music["formats"][0]
+        music = ydl.extract_info(link, download=False)
+
         self.title = music['title']
-        self.url = music["webpage_url"]
-        self.stream_url = music_format["url"]
+        self.url = music['webpage_url']
+        self.stream_url = music['url']

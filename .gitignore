@@ -13,3 +13,4 @@ discord.log
 nextcord.log
 
 docker-compose.yml
+config.ini

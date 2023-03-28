@@ -11,6 +11,7 @@ from bot.addons.music import Music
 
 YT_BASE = "https://youtube.com/results"
 YT_LINK_REGEX = "http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?[\w\?=]*)?"
+EMBED_COLOR = nextcord.Colour.from_rgb(0, 141, 125)
 
 
 async def youtube_search(search):
@@ -27,7 +28,7 @@ async def youtube_search(search):
         async with client.get(YT_BASE, params=p, headers=h) as resp:
             dom = await resp.text()
     found = re.findall(r'watch\?v=([a-zA-Z0-9_-]{11})', dom)
-    print("found : {}".format(found))
+    # print("found : {}".format(found))
     return f"https://youtu.be/watch?v={found[0]}"
 
 
@@ -64,8 +65,8 @@ class CogMusic(commands.Cog):
 
             self.music_queue.pop(0)
 
-            source = nextcord.PCMVolumeTransformer(nextcord.FFmpegPCMAudio(song.stream_url,
-                                                                           before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"))
+            source = nextcord.PCMVolumeTransformer(nextcord.FFmpegPCMAudio(
+                song.stream_url, before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"))
             self.voice_client.play(source, after=lambda e: self.play_next())
         else:
             self.is_playing = False
@@ -79,16 +80,14 @@ class CogMusic(commands.Cog):
             self.is_playing = True
             new_song = self.music_queue[0][0]
             self.music_queue.pop(0)
-            embed_message = nextcord.Embed(title="La musique elle a changé",
-                                           colour=nextcord.Colour.from_rgb(
-                                               37, 150, 190),
+            embed_message = nextcord.Embed(title="La musique elle a changé", colour=EMBED_COLOR,
                                            description="[{0}]({1})".format(new_song.title, new_song.url))
             embed_message.set_author(name=f"Il reste {len(self.music_queue)} musiques dans la file" if len(
                 self.music_queue) > 1 else f"Il reste {len(self.music_queue)} musique dans la file")
-            asyncio.run_coroutine_threadsafe(self.bot.get_channel(int(env.get("BOTTE_MUSIC_CHANNEL"))).send(embed=embed_message),
-                                             self.bot.loop)
-            source = nextcord.PCMVolumeTransformer(nextcord.FFmpegPCMAudio(new_song.stream_url,
-                                                                           before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"))
+            asyncio.run_coroutine_threadsafe(self.bot.get_channel(
+                int(env.get("BOTTE_MUSIC_CHANNEL"))).send(embed=embed_message), self.bot.loop)
+            source = nextcord.PCMVolumeTransformer(nextcord.FFmpegPCMAudio(
+                new_song.stream_url, before_options="-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"))
             self.voice_client.play(source, after=lambda e: self.play_next())
 
         else:
@@ -120,19 +119,22 @@ class CogMusic(commands.Cog):
                 url = yt_search_task.result()
                 if len(url) > 0:
                     music = Music(url)
+                else:
+                    await interaction.send("Aucune musique trouvée, faites une meilleure recherche...")
+                    return
             else:
                 music = Music(url_ou_titre)
 
             self.music_queue.append([music, voice_channel])
 
-            embed_message = nextcord.Embed(title="En cours de lecture", colour=nextcord.Colour.from_rgb(37, 150, 190),
-                                           description="[{0}]({1})".format(music.title, music.url))
+            embed_message = nextcord.Embed(
+                title="En cours de lecture", colour=EMBED_COLOR, description="[{0}]({1})".format(music.title, music.url))
             embed_message.set_author(
                 name="File d'attente (1/{})".format(len(self.music_queue)))
             embed_message.set_footer(text="Ajouté par {}".format(
                 interaction.user.name), icon_url=interaction.user.avatar.url)
-            asyncio.run_coroutine_threadsafe(self.bot.get_channel(int(env.get("BOTTE_MUSIC_CHANNEL"))).send(embed=embed_message),
-                                             self.bot.loop)
+            asyncio.run_coroutine_threadsafe(self.bot.get_channel(
+                int(env.get("BOTTE_MUSIC_CHANNEL"))).send(embed=embed_message), self.bot.loop)
 
             if not self.is_playing:
                 await self.play_song(interaction)
@@ -147,7 +149,15 @@ class CogMusic(commands.Cog):
 
         self.is_playing = False
         self.is_paused = False
+        if self.voice_client is not None and not self.is_playing:
+            self.voice_client.stop()
+        self.music_queue.clear()
         await self.voice_client.disconnect()
+        embed_message = nextcord.Embed(
+            title="Rayon de soleil s'en va", colour=EMBED_COLOR)
+        embed_message.set_footer(text="Arrêté par {}".format(
+            interaction.user.name), icon_url=interaction.user.avatar.url)
+        await interaction.send(embed=embed_message)
 
     @nextcord.slash_command(name="resume", description="Il est temps de reprendre du service", guild_ids=[int(env.get("BOTTE_GUILD_ID"))])
     async def resume(self, interaction: Interaction):
@@ -159,11 +169,13 @@ class CogMusic(commands.Cog):
             self.is_playing = True
             self.is_paused = False
             self.voice_client.resume()
-            embed_message = nextcord.Embed(title="Rayon de soleil reprend du service",
-                                           colour=nextcord.Colour.from_rgb(37, 150, 190))
-            embed_message.set_footer(text="Mis en route par {}".format(interaction.user.name),
-                                     icon_url=interaction.user.avatar.url)
+            embed_message = nextcord.Embed(
+                title="Rayon de soleil reprend du service", colour=EMBED_COLOR)
+            embed_message.set_footer(text="Mis en route par {}".format(
+                interaction.user.name), icon_url=interaction.user.avatar.url)
             await interaction.send(embed=embed_message)
+        else:
+            await interaction.send("Rayon de soleil n'est pas en pause")
 
     @nextcord.slash_command(name="pause", description="C'est l'heure de la sieste", guild_ids=[int(env.get("BOTTE_GUILD_ID"))])
     async def pause(self, interaction: Interaction):
@@ -175,35 +187,36 @@ class CogMusic(commands.Cog):
             self.is_playing = False
             self.is_paused = True
             self.voice_client.pause()
-            embed_message = nextcord.Embed(title="Rayon de soleil est en pause",
-                                           colour=nextcord.Colour.from_rgb(37, 150, 190))
-            embed_message.set_footer(text="Mis en pause par {}".format(interaction.user.name),
-                                     icon_url=interaction.user.avatar.url)
+            embed_message = nextcord.Embed(
+                title="Rayon de soleil est en pause", colour=EMBED_COLOR)
+            embed_message.set_footer(text="Mis en pause par {}".format(
+                interaction.user.name), icon_url=interaction.user.avatar.url)
             await interaction.send(embed=embed_message)
 
-    @nextcord.slash_command(name="skip", description="Faut savoir changer de disque", guild_ids=[int(env.get("BOTTE_GUILD_ID"))])
+    @nextcord.slash_command(name="next", description="Faut savoir changer de disque", guild_ids=[int(env.get("BOTTE_GUILD_ID"))])
     async def skip(self, interaction: Interaction):
         """
-        Commande /skip : Faut savoir changer de disque
+        Commande /next : Faut savoir changer de disque
         """
 
         if self.voice_client is not None and self.voice_client:
             self.voice_client.stop()
-            await self.play_song(interaction)
+        else:
+            await interaction.send("Il n'y a pas de musique en cours de lecture")
 
     @nextcord.slash_command(name="clear", description="Petit coup de karcher", guild_ids=[int(env.get("BOTTE_GUILD_ID"))])
     async def clear(self, interaction: Interaction):
         """
         Commande /clear : Petit coup de karcher
         """
-        
+
         if self.voice_client is not None and not self.is_playing:
             self.voice_client.stop()
         self.music_queue.clear()
-        embed_message = nextcord.Embed(title="Rayon de soleil utilise swiffer",
-                                       colour=nextcord.Colour.from_rgb(37, 150, 190))
-        embed_message.set_footer(text="L'acheteur du swiffer est {}".format(interaction.user.name),
-                                 icon_url=interaction.user.avatar.url)
+        embed_message = nextcord.Embed(
+            title="Rayon de soleil utilise swiffer", colour=EMBED_COLOR)
+        embed_message.set_footer(text="L'acheteur du swiffer est {}".format(
+            interaction.user.name), icon_url=interaction.user.avatar.url)
         await interaction.send(embed=embed_message)
 
     @nextcord.slash_command(name="queue", description="Fait moi voir ce que t'as", guild_ids=[int(env.get("BOTTE_GUILD_ID"))])
@@ -211,15 +224,17 @@ class CogMusic(commands.Cog):
         """
         Commande /queue : Fait moi voir ce que t'as
         """
-        
-        retval = ""
-        for i in range(0, len(self.music_queue)):
-            if (i > 4):
-                break
-            retval += self.music_queue[i][0].title + "\n"
 
-        if retval != "":
-            await interaction.send(retval)
+        # Faire une boucle pour afficher toutes les musiques de la file d'attente avec un embed
+        if len(self.music_queue) > 0:
+            embed_message = nextcord.Embed(
+                title="File d'attente", colour=EMBED_COLOR)
+            for i in range(0, len(self.music_queue)):
+                embed_message.add_field(
+                    name="{}/{}".format(i+1, len(self.music_queue)), value="[{0}]({1})".format(self.music_queue[i][0].title, self.music_queue[i][0].url), inline=False)
+            embed_message.set_footer(text="Affiché par {}".format(
+                interaction.user.name), icon_url=interaction.user.avatar.url)
+            await interaction.send(embed=embed_message)
         else:
             await interaction.send("Il n'y a pas de musique dans la queue :'(")
 
