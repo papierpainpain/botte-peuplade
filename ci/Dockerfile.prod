@@ -1,6 +1,0 @@
-ARG TAG
-FROM registry.papierpain.fr/labo/botte-peuplade/parent:${TAG}
-
-COPY . /bot
-
-CMD [ "python3", "./main.py" ]

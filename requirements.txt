@@ -1,7 +1,3 @@
 # Requirements for discord botte bot
 
-pip
-PyNaCl
-opuslib
-nextcord==2.4.1
 yt-dlp==2023.3.4

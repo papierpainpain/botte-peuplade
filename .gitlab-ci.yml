@@ -10,29 +10,13 @@ include:
       - '/templates/build-docker.gitlab-ci.yml'
       - '/templates/deploy-swarm.gitlab-ci.yml'
 
-build-docker-parent:
-  extends: .template-build-docker
-  variables:
-    IMAGE: $CI_REGISTRY_IMAGE/parent:${VERSION}
-    DOCKERFILE: ci/Dockerfile.prod-env
-  only:
-    changes:
-      - ci/Dockerfile.prod-env
-      - requirements.txt
-
 build-docker:
   extends: .template-build-docker
-  variables:
-    DOCKERFILE: ci/Dockerfile.prod
-    TAGS: --build-arg TAG=$VERSION
-  needs:
-    - job: build-docker-parent
-      optional: true
 
 deploy-stack:
   extends: .template-deploy-stack
-  before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  variables:
+    INTERNAL_REGISTRY: "true"
 
 workflow:
   name: 💥 $VERSION - (╯°□°)╯︵ ┻━┻ 💥
