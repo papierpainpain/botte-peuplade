@@ -1,16 +1,11 @@
-# INTELLIJ
-.idea
-
 # VSCODE
 .vscode
 
-# ENVIRONMENT VENV (Python)
+# ENVIRONMENT
 bot-env
 **/__pycache__
+.env
 
 # LOG FILE
-discord.log
 nextcord.log
-
-docker-compose.yml
-config.ini
+**/logs

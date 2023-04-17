@@ -4,7 +4,7 @@ from nextcord.ext import commands
 class CogMessage(commands.Cog):
     """
     Listener pour les messages
-    
+
     C'est la partie inutile du bot, mais c'est pas mal <3
     """
 
@@ -36,7 +36,7 @@ class CogMessage(commands.Cog):
 
         if msg_lower.endswith("oui"):
             await message.reply('stiti !')
-        
+
         if msg_lower.find("g u e u l e") != -1 or msg_lower.find("gueule") != -1:
             await message.reply('FERME TA GUEULE TOI !!!!')
 

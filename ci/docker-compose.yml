@@ -1,15 +1,28 @@
 version: '3'
 
+configs:
+  lavalink-config:
+    file: application.yml
+
 services:
   app:
     image: registry.papierpain.fr/labo/botte-peuplade:${VERSION}
     environment:
+      # BOT
       - BOTTE_ENV=production
+      - BOTTE_NAME=Duc La Botte De Terre
       - BOTTE_VERSION=${VERSION}
       - BOTTE_TOKEN=${BOT_TOKEN}
       - BOTTE_PREFIX=/
-      - BOTTE_MUSIC_CHANNEL=${BOT_MUSIC_CHANNEL}
-      - BOTTE_GUILD_ID=${BOT_GUILD_ID}
+      # GUILD
+      - GUILD_ID=${BOT_GUILD_ID}
+      # SPOTIFY
+      - SPOTIFY_CLIENT_ID=<id-du-client-spotify>
+      - SPOTIFY_CLIENT_SECRET=<secret-du-client-spotify>
+      # LAVALINK
+      - LAVALINK_HOST=lavalink
+      - LAVALINK_PORT=2333
+      - LAVALINK_PASSWORD=${BOT_LAVALINK_PASSWORD}
     deploy:
       mode: replicated
       replicas: 1
@@ -17,9 +30,28 @@ services:
         constraints: [node.role == manager]
       restart_policy:
         max_attempts: 3
+    depends_on:
+      - lavalink
     networks:
       - cloud-public
+      - cloud-botte
+
+  lavalink:
+    image: fredboat/lavalink:latest
+    deploy:
+      restart_policy:
+        condition: on-failure
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+    configs:
+      - source: lavalink-config
+        target: /opt/Lavalink/application.yml
+    networks:
+      - cloud-botte
 
 networks:
   cloud-public:
     external: true
+  cloud-botte:

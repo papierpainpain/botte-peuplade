@@ -1,11 +1,10 @@
-from nextcord import SlashOption
 import nextcord
+from nextcord import SlashOption
 from nextcord import Interaction
 from nextcord import User
 from nextcord.ext import commands
-from nextcord.ext.commands import Context
 
-from os import environ as env
+from utils.constants import Guild
 
 poopEdition = []
 coeursMignons = []
@@ -22,7 +21,7 @@ class CogReaction(commands.Cog):
     @nextcord.slash_command(
         name="prout",
         description="Prout général !!!",
-        guild_ids=[int(env.get("BOTTE_GUILD_ID"))]
+        guild_ids=[Guild.id]
     )
     async def prout(self, interaction: Interaction):
 
@@ -31,8 +30,8 @@ class CogReaction(commands.Cog):
     # Poop edition
     @nextcord.slash_command(
         name="poop",
-        description="Caca sur toi :heart:",
-        guild_ids=[int(env.get("BOTTE_GUILD_ID"))]
+        description="Caca sur toi ♥",
+        guild_ids=[Guild.id]
     )
     async def poop_edition(
         self,
@@ -47,7 +46,7 @@ class CogReaction(commands.Cog):
         if status == "add":
             if user not in poopEdition:
                 poopEdition.append(user)
-                await interaction.send("{} :poop: Tu as été poopé !".format(user.mention))
+                await interaction.send("{} 💩 Tu as été poopé !".format(user.mention))
             else:
                 # Il est déjà poopé ! Tu deviens un poopé !
                 poopEdition.append(interaction.user)
@@ -55,17 +54,17 @@ class CogReaction(commands.Cog):
         elif status == "remove":
             if user in poopEdition:
                 poopEdition.remove(user)
-                await interaction.send("{} :poop: Tu n'es plus poopé !".format(user.mention))
+                await interaction.send("{} 💩 Tu n'es plus poopé !".format(user.mention))
             else:
                 await interaction.send("{} est déjà propre !".format(user.mention))
         else:
-            await interaction.send("Perdu ! :cry:")
-    
+            await interaction.send("Perdu ! 😢")
+
     # Coeur edition
     @nextcord.slash_command(
         name="heart",
-        description="Coeur sur toi :heart:",
-        guild_ids=[int(env.get("BOTTE_GUILD_ID"))]
+        description="Coeur sur toi ♥",
+        guild_ids=[Guild.id]
     )
     async def coeur_edition(
         self,
@@ -80,17 +79,17 @@ class CogReaction(commands.Cog):
         if status == "add":
             if user not in coeursMignons:
                 coeursMignons.append(user)
-                await interaction.send("{} :heart: Coeur sur toi !".format(user.mention))
+                await interaction.send("{} ♥ Coeur sur toi !".format(user.mention))
             else:
                 await interaction.send("Tu es trop gentil, mais {} est déjà un coeur !".format(user.mention))
         elif status == "remove":
             if user in coeursMignons:
                 coeursMignons.remove(user)
-                await interaction.send("{} Tu n'es plus coeur :cry:".format(user.mention))
+                await interaction.send("{} Tu n'es plus coeur 😢".format(user.mention))
             else:
                 await interaction.send("{} n'est pas un coeur !".format(user.mention))
         else:
-            await interaction.send("Perdu ! :cry:")
+            await interaction.send("Perdu ! 😢")
 
     @commands.Cog.listener()
     async def on_message(self, message):

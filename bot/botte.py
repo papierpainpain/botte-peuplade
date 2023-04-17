@@ -1,6 +1,7 @@
-from os import environ as env
-
+import nextcord
 from nextcord.ext import commands
+
+from utils.constants import Bot
 
 
 class Botte(commands.Bot):
@@ -8,8 +9,13 @@ class Botte(commands.Bot):
     Classe principale du Botte
     """
 
-    def __init__(self, intents):
-        super().__init__(command_prefix=env.get('BOTTE_PREFIX'),
+    def __init__(self):
+        # Configuration des Intents Discord
+        intents = nextcord.Intents.default()
+        intents.message_content = True
+        intents.members = True
+
+        super().__init__(command_prefix=Bot.prefix,
                          intents=intents, help_command=None)
         self.add_commands()
         self.add_listeners()
