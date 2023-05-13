@@ -5,6 +5,7 @@
 bot-env
 **/__pycache__
 .env
+.venv
 
 # LOG FILE
 nextcord.log

@@ -23,6 +23,15 @@ GUILD_ID=<id-de-votre-serveur-discord>
 # SPOTIFY
 SPOTIFY_CLIENT_ID=<id-du-client-spotify>
 SPOTIFY_CLIENT_SECRET=<secret-du-client-spotify>
+# LAVALINK
+LAVALINK_HOST=<host>
+LAVALINK_PORT=<port>
+LAVALINK_PASSWORD=<password>
+# MINECRAFT
+MINECRAFT_HOST=<a-definir>
+MINECRAFT_PORT=<a-definir>
+MINECRAFT_USERNAME=<a-definir>
+MINECRAFT_PASSWORD=<a-definir>
 ```
 
 Lancer le bot :

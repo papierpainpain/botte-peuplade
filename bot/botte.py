@@ -32,6 +32,7 @@ class Botte(commands.Bot):
         Ajoute les commandes
         """
 
+        self.load_extension("bot.commands.cog_minecraft")
         self.load_extension("bot.commands.cog_music")
         self.load_extension("bot.commands.cog_reaction")
 

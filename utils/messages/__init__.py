@@ -2,6 +2,8 @@ import nextcord
 
 from utils.constants import Colors, Emojis
 
+DEFAULT_TIMEOUT = 30
+
 
 class DeleteMessage(nextcord.ui.View):
     """
@@ -29,14 +31,14 @@ class MessageType():
     Types de messages
     """
 
-    async def error(interaction: nextcord.Interaction, message: str, delete_after: int = 5):
+    async def error(interaction: nextcord.Interaction, message: str, delete_after: int = DEFAULT_TIMEOUT):
         """
         Message d'erreur
 
         Args:
             interaction (nextcord.Interaction): Interaction
             message (str): Message
-            delete_after (int, optional): Temps avant suppression (en secondes). Par défaut à 5.
+            delete_after (int, optional): Temps avant suppression (en secondes). Par défaut à DEFAULT_TIMEOUT.
         """
 
         embed = nextcord.Embed(
@@ -44,14 +46,14 @@ class MessageType():
         message: nextcord.Message = await interaction.send(embed=embed)
         return message, await message.delete(delay=delete_after)
 
-    async def info(interaction: nextcord.Interaction, message: str, delete_after: int = 5):
+    async def info(interaction: nextcord.Interaction, message: str, delete_after: int = DEFAULT_TIMEOUT):
         """
         Message d'information
 
         Args:
             interaction (nextcord.Interaction): Interaction
             message (str): Message
-            delete_after (int, optional): Temps avant suppression (en secondes). Par défaut à 5.
+            delete_after (int, optional): Temps avant suppression (en secondes). Par défaut à DEFAULT_TIMEOUT.
         """
 
         embed = nextcord.Embed(
@@ -59,14 +61,14 @@ class MessageType():
         message: nextcord.Message = await interaction.send(embed=embed)
         return message, await message.delete(delay=delete_after)
 
-    async def warning(interaction: nextcord.Interaction, message: str, delete_after: int = 5):
+    async def warning(interaction: nextcord.Interaction, message: str, delete_after: int = DEFAULT_TIMEOUT):
         """
         Message d'avertissement
 
         Args:
             interaction (nextcord.Interaction): Interaction
             message (str): Message
-            delete_after (int, optional): Temps avant suppression (en secondes). Par défaut à 5.
+            delete_after (int, optional): Temps avant suppression (en secondes). Par défaut à DEFAULT_TIMEOUT.
         """
 
         embed = nextcord.Embed(

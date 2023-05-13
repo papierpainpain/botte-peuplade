@@ -24,6 +24,13 @@ class Lavalink:
     password = environ.get("LAVALINK_PASSWORD")
     https = False
 
+class Minecraft:
+    load_dotenv() # TODO: Trouver comment éviter cette duplication
+    host = environ.get("MINECRAFT_HOST")
+    port = int(environ.get("MINECRAFT_PORT"))
+    username = environ.get("MINECRAFT_USERNAME")
+    password = environ.get("MINECRAFT_PASSWORD")
+
 class Colors:
     info = 0x00ccb2
     error = 0xf23f42

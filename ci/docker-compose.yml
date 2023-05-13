@@ -23,13 +23,16 @@ services:
       - LAVALINK_HOST=lavalink
       - LAVALINK_PORT=2333
       - LAVALINK_PASSWORD=${BOT_LAVALINK_PASSWORD}
+      # MINECRAFT
+      - MINECRAFT_HOST=${NASTICOT_IP}
+      - MINECRAFT_PORT=${NASTICOT_PORT}
+      - MINECRAFT_USERNAME=${MC_USERNAME}
+      - MINECRAFT_PASSWORD=${MC_PASSWORD}
     deploy:
       mode: replicated
       replicas: 1
       placement:
         constraints: [node.role == manager]
-      restart_policy:
-        max_attempts: 3
     depends_on:
       - lavalink
     networks:

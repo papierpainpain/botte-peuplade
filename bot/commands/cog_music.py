@@ -1,4 +1,3 @@
-import asyncio
 from typing import Union
 import nextwave
 from nextwave.ext import spotify
@@ -6,7 +5,7 @@ from nextwave.ext import spotify
 import nextcord
 from nextcord.ext import commands
 
-from utils.messages import DeleteMessage as MessageDelete, MessageType
+from utils.messages import DeleteMessage as MessageType
 from utils.constants import Guild, Lavalink, Spotify
 from utils.messages.music import MusicMessageType
 
