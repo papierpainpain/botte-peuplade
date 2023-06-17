@@ -12,11 +12,23 @@ include:
 
 build-docker:
   extends: .template-build-docker
+  variables:
+    PLATFORMS: "linux/arm64"
 
 deploy-stack:
   extends: .template-deploy-stack
   variables:
     INTERNAL_REGISTRY: "true"
+  rules:
+    - if: $VERSION =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/ || $VERSION =~ /^[0-9]+\.[0-9]+\.[0-9]+$/ || $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
+      variables:
+        APP_IMAGE: $CI_REGISTRY_IMAGE:${VERSION}
+    - if: $CI_COMMIT_REF_NAME == "master"
+      variables:
+        APP_IMAGE: $CI_REGISTRY_IMAGE:latest
+    - if: $VERSION != "" || $CI_COMMIT_TAG || ( $CI_COMMIT_REF_NAME && $CI_COMMIT_REF_NAME != "master" )
+      variables:
+        APP_IMAGE: $CI_REGISTRY_IMAGE/test:${VERSION}
 
 workflow:
   name: 💥 $VERSION - (╯°□°)╯︵ ┻━┻ 💥

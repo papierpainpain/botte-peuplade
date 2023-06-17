@@ -6,7 +6,7 @@ configs:
 
 services:
   app:
-    image: registry.papierpain.fr/labo/botte-peuplade:${VERSION}
+    image: ${APP_IMAGE}
     environment:
       # BOT
       - BOTTE_ENV=production
@@ -33,10 +33,9 @@ services:
       replicas: 1
       placement:
         constraints: [node.role == manager]
-    depends_on:
-      - lavalink
+      restart_policy:
+        condition: on-failure
     networks:
-      - cloud-public
       - cloud-botte
 
   lavalink:
@@ -55,6 +54,4 @@ services:
       - cloud-botte
 
 networks:
-  cloud-public:
-    external: true
-  cloud-botte:
+  cloud-botte: {}

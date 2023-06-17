@@ -1,4 +1,5 @@
 ci/*
+!ci/entrypoint.sh
 .gitignore
 .gitlab-ci.yml
 README.md
