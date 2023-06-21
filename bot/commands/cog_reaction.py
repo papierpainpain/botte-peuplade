@@ -1,3 +1,4 @@
+from time import sleep
 import nextcord
 from nextcord import SlashOption
 from nextcord import Interaction
@@ -6,6 +7,7 @@ from nextcord.ext import commands
 import random
 
 from utils.constants import Guild
+from utils.messages import MessageType
 
 poopEdition = []
 coeursMignons = []
@@ -78,7 +80,7 @@ class CogReaction(commands.Cog, description="Reaction commands"):
             await interaction.send("Perdu ! 😢")
 
     @nextcord.slash_command(name="taper", description="Je vais te taper !", guild_ids=[Guild.id])
-    async def coeur_edition(self, interaction: Interaction, user: User = SlashOption(name="user")):
+    async def taper(self, interaction: Interaction, user: User = SlashOption(name="user")):
         """Je vais te taper !
 
         Parameters
@@ -89,6 +91,8 @@ class CogReaction(commands.Cog, description="Reaction commands"):
             Utilisateur à taper
         """
 
+        await MessageType.info(interaction, f"Destruction de {user.name} en cours...")
+
         # Ajout de l'utilisateur dans la liste des victimes si il n'y est pas
         # Sinon on incrémente son compteur de 4
         if user in victimes:
@@ -97,7 +101,27 @@ class CogReaction(commands.Cog, description="Reaction commands"):
                     victime["compteur"] += 4
         else:
             victimes.append({"user": user, "compteur": 4})
-        await interaction.send("Destruction de {} en cours...".format(user.name))
+
+    @nextcord.slash_command(name="debout", description="Debout la d'dans !!", guild_ids=[Guild.id])
+    async def debout(self, interaction: Interaction, user: User = SlashOption(name="user"), motDoux: str = SlashOption(name="petit_message", default="Bouge toi !", description="Petit mot doux <3", required=False)):
+        """Debout la d'dans !!
+
+        Parameters
+        ----------
+        interaction: nextcord.Interaction
+            Interaction du slash command
+        user: User
+            Utilisateur à réveiller
+        motDoux: str
+            Mot doux à envoyer
+        """
+
+        await MessageType.info(interaction, f"Opération réveil de {user.name} en cours...")
+
+        # Envoi de 20 messages à l'utilisateur
+        for _ in range(20):
+            sleep(.5)
+            await MessageType.error(user, f"{motDoux}", delete_after=120)
 
     @commands.Cog.listener()
     async def on_message(self, message):
