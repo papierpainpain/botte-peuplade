@@ -5,9 +5,11 @@ from nextwave.ext import spotify
 import nextcord
 from nextcord.ext import commands
 
-from utils.messages import DeleteMessage as MessageType
+from utils.messages import MessageType
 from utils.constants import Guild, Lavalink, Spotify
 from utils.messages.music import MusicMessageType
+
+ICON = "🎶"
 
 
 class CogMusic(commands.Cog, description="Listen and Control that music which you want."):
@@ -33,11 +35,11 @@ class CogMusic(commands.Cog, description="Listen and Control that music which yo
         """
 
         if not interaction.guild.voice_client:
-            await MessageType.error(interaction, "Jeanne d'arc... Tu entends du son ?", 5)
+            await MessageType.error(interaction, f"Jeanne d'arc... Tu entends du son ?", ICON)
             return False
 
         elif not interaction.user.voice:
-            await MessageType.error(interaction, "Il faut que tu te connectes si tu veux que je te fasse vibrer 💃🏻", 5)
+            await MessageType.error(interaction, f"Il faut que tu te connectes si tu veux que je te fasse vibrer 💃🏻", ICON)
             return False
 
         else:
@@ -53,14 +55,14 @@ class CogMusic(commands.Cog, description="Listen and Control that music which yo
         """
 
         if not track:
-            return await MessageType.error(interaction, "Je n'ai pas trouvé la musique que tu cherches 😢", 20)
+            return await MessageType.error(interaction, f"Je n'ai pas trouvé la musique que tu cherches 😢", ICON)
 
         print(f"> Track: {track.author} - {track.title} - {track.uri}")
 
         vc: nextwave.Player = interaction.guild.voice_client
         await vc.queue.put_wait(track)
 
-        await MusicMessageType.info(interaction, f"Le Tube de l'année a été ajouté.", 20)
+        await MessageType.info(interaction, f"Le Tube de l'année a été ajouté.", ICON)
 
         if not vc.is_playing() and not vc.queue.is_empty:
             await vc.play(await vc.queue.get_wait())
@@ -105,13 +107,13 @@ class CogMusic(commands.Cog, description="Listen and Control that music which yo
         """
 
         if not interaction.user.voice:
-            return await MessageType.error(interaction, "Il faut que tu te connectes si tu veux que je te fasse vibrer 💃🏻", 5)
+            return await MessageType.error(interaction, f"Il faut que tu te connectes si tu veux que je te fasse vibrer 💃🏻", ICON)
 
         elif not interaction.guild.voice_client:
             vc: nextwave.Player = await interaction.user.voice.channel.connect(cls=nextwave.Player)
 
         if not interaction.user.voice.channel == interaction.guild.voice_client.channel:
-            msg = await MusicMessageType.info(interaction, "Je vais bientôt te rejoindre...", 7)
+            msg = await MessageType.info(interaction, f"Je vais bientôt te rejoindre...", ICON)
             vc: nextwave.Player = interaction.guild.voice_client
             await vc.move_to(interaction.user.voice.channel)
             return msg
@@ -134,13 +136,13 @@ class CogMusic(commands.Cog, description="Listen and Control that music which yo
         """
 
         if not interaction.user.voice:
-            return await MessageType.error(interaction, "Il faut que tu te connectes si tu veux que je te fasse vibrer 💃🏻", 5)
+            return await MessageType.error(interaction, f"Il faut que tu te connectes si tu veux que je te fasse vibrer 💃🏻", ICON)
 
         elif not interaction.guild.voice_client:
             vc: nextwave.Player = await interaction.user.voice.channel.connect(cls=nextwave.Player)
 
         if not interaction.user.voice.channel == interaction.guild.voice_client.channel:
-            msg = await MusicMessageType.info(interaction, "Je vais bientôt te rejoindre...", 7)
+            msg = await MessageType.info(interaction, f"Je vais bientôt te rejoindre...", ICON)
             vc: nextwave.Player = interaction.guild.voice_client
             await vc.move_to(interaction.user.voice.channel)
             return msg
@@ -155,7 +157,6 @@ class CogMusic(commands.Cog, description="Listen and Control that music which yo
 
         for track in playlist.tracks[:number_of_songs]:
             await self.add_track(interaction, track)
-            # await asyncio.sleep(0.5)
 
     @nextcord.slash_command(name="next", description="Passe à la musique suivante", guild_ids=[Guild.id])
     async def next(self, interaction: nextcord.Interaction):
@@ -169,7 +170,7 @@ class CogMusic(commands.Cog, description="Listen and Control that music which yo
         if await self.cog_check(interaction):
             vc: nextwave.Player = interaction.guild.voice_client
             await vc.stop()
-            await MusicMessageType.info(interaction, "On passe à la musique suivante, c'est reeeeepartiiiii !!!", 10)
+            await MessageType.info(interaction, f"On passe à la musique suivante, c'est reeeeepartiiiii !!!", ICON)
 
     @nextcord.slash_command(name="pause", description="C'est l'heure de la sieste", guild_ids=[Guild.id])
     async def pause(self, interaction: nextcord.Interaction):
@@ -183,12 +184,7 @@ class CogMusic(commands.Cog, description="Listen and Control that music which yo
         if await self.cog_check(interaction):
             vc: nextwave.Player = interaction.guild.voice_client
             await vc.pause()
-            await MusicMessageType.info(interaction, "⏸️ Rayon de soleil est en pause", 5)
-
-        # if interaction.user is self._global_interaction.user:
-
-        # else:
-        #     await MessageType.warning(interaction, "🤡 Cette musique n'est pas la tienne, tu ne peux pas la mettre en pause.", 5)
+            await MessageType.info(interaction, f"⏸️ Rayon de soleil est en pause", ICON)
 
     @nextcord.slash_command(name="resume", description="Il est temps de reprendre du service", guild_ids=[Guild.id])
     async def resume(self, interaction: nextcord.Interaction):
@@ -202,11 +198,7 @@ class CogMusic(commands.Cog, description="Listen and Control that music which yo
         if await self.cog_check(interaction):
             vc: nextwave.Player = interaction.guild.voice_client
             await vc.resume()
-            await MusicMessageType.info(interaction, "⏯️ Et c'est reparti !", 5)
-
-        # if interaction.user is self._global_interaction.user:
-        # else:
-        #     await MessageType.warning(interaction, "🤡 Cette musique n'est pas la tienne, tu ne peux pas la mettre en pause.", 5)
+            await MessageType.info(interaction, f"⏯️ Et c'est reparti !", ICON)
 
     @nextcord.slash_command(name="queue", description="Affiche la liste des musiques en attente", guild_ids=[Guild.id])
     async def queue(self, interaction: nextcord.Interaction):
@@ -221,8 +213,7 @@ class CogMusic(commands.Cog, description="Listen and Control that music which yo
             vc: nextwave.Player = interaction.guild.voice_client
 
         if vc.queue.is_empty:
-            await MessageType.warning(interaction, "Ma queue est vide... :smirk:", 7)
-
+            await MessageType.warning(interaction, f"Ma queue est vide... :smirk:", ICON)
         else:
             await MusicMessageType.track_list(interaction, vc.queue.copy())
     
@@ -238,7 +229,7 @@ class CogMusic(commands.Cog, description="Listen and Control that music which yo
         if await self.cog_check(interaction):
             vc: nextwave.Player = interaction.guild.voice_client
             vc.queue.shuffle()
-            await MusicMessageType.info(interaction, "Ratoutouille de musiiique !", 5)
+            await MessageType.info(interaction, f"Ratoutouille de musiiique !", ICON)
 
     @nextcord.slash_command(name="stop", description="🔌 Déconnecte le bot du channel vocal.", guild_ids=[Guild.id])
     async def vcdisconnect(self, interaction: nextcord.Interaction):
@@ -254,7 +245,7 @@ class CogMusic(commands.Cog, description="Listen and Control that music which yo
             await vc.stop()
             vc.queue.clear()
             await vc.disconnect()
-            await MusicMessageType.info(interaction, "🔌 Mamie a été débranchée !", 5)
+            await MessageType.info(interaction, f"🔌 Mamie a été débranchée !", ICON)
 
     @nextcord.slash_command(name="volume", description="Change le volume du bot.", guild_ids=[Guild.id])
     async def setvolume(self, interaction: nextcord.Interaction, volume: int):
@@ -269,19 +260,12 @@ class CogMusic(commands.Cog, description="Listen and Control that music which yo
         if await self.cog_check(interaction):
             vc: nextwave.Player = interaction.guild.voice_client
 
-        # if interaction.user is self._global_interaction.user:
-
             if volume > 100:
-                await MessageType.warning(interaction, "🤡 C'est beaucoup trop (tu vas exploser...).", 5)
-
+                await MessageType.warning(interaction, f"🤡 C'est beaucoup trop (tu vas exploser...).", ICON)
             elif volume < 0:
-                await MessageType.warning(interaction, "🤡 Gnegnegne...", 5)
-
+                await MessageType.warning(interaction, f"🤡 Gnegnegne...", ICON)
             else:
-                return await vc.set_volume(volume), await MusicMessageType.info(interaction, f"Le 🔊 volume a été défini à `{volume}%`", 3)
-
-        else:
-            await MessageType.warning(interaction, "🤡 Cette musique n'est pas la tienne, tu ne peux pas la mettre en pause.", 5)
+                return await vc.set_volume(volume), await MessageType.info(interaction, f"🔊 Le volume a été défini à `{volume}%`", ICON)
 
     @nextcord.slash_command(name="nowplaying", description="Affiche les informations de la musique en cours.", guild_ids=[Guild.id])
     async def nowplaying(self, interaction: nextcord.Interaction):
@@ -296,7 +280,7 @@ class CogMusic(commands.Cog, description="Listen and Control that music which yo
             vc: nextwave.Player = interaction.guild.voice_client
 
         if not vc.is_playing():
-            return await MessageType.error(interaction, "Je ne joue pas de musique...", 5)
+            return await MessageType.error(interaction, f"Je ne joue pas de musique...", ICON)
 
         embed = MusicMessageType.track_embed("Musique en cours", vc.track)
         message: nextcord.Message = await interaction.send(embed=embed)

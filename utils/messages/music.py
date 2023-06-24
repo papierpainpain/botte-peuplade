@@ -46,18 +46,3 @@ class MusicMessageType():
 
         message: nextcord.Message = await interaction.send(embed=embed)
         return message, await message.delete(delay=10)
-
-    async def info(interaction: nextcord.Interaction, message: str, delete_after: float = 5):
-        """
-        Message d'information
-
-        Args:
-            interaction (nextcord.Interaction): Interaction
-            message (str): Message
-            delete_after (float, optional): Temps avant suppression (en secondes). Par défaut à 5.
-        """
-
-        embed = nextcord.Embed(
-            title=f"🎶 | {message}", color=Colors.info)
-        message: nextcord.Message = await interaction.send(embed=embed)
-        return message, await message.delete(delay=delete_after)

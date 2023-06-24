@@ -9,6 +9,8 @@ import random
 from utils.constants import Guild
 from utils.messages import MessageType
 
+ICON = "🥳"
+
 poopEdition = []
 coeursMignons = []
 victimes = []
@@ -91,7 +93,7 @@ class CogReaction(commands.Cog, description="Reaction commands"):
             Utilisateur à taper
         """
 
-        await MessageType.info(interaction, f"Destruction de {user.name} en cours...")
+        await MessageType.info(interaction, f"Destruction de {user.name} en cours...", ICON)
 
         # Ajout de l'utilisateur dans la liste des victimes si il n'y est pas
         # Sinon on incrémente son compteur de 4
@@ -116,12 +118,12 @@ class CogReaction(commands.Cog, description="Reaction commands"):
             Mot doux à envoyer
         """
 
-        await MessageType.info(interaction, f"Opération réveil de {user.name} en cours...")
+        await MessageType.info(interaction, f"Opération réveil de {user.name} en cours...", ICON)
 
         # Envoi de 20 messages à l'utilisateur
         for _ in range(20):
             sleep(.5)
-            await MessageType.error(user, f"{motDoux}", delete_after=120)
+            await MessageType.error(user, f"{motDoux}", ICON, delete_after=120)
 
     @commands.Cog.listener()
     async def on_message(self, message):

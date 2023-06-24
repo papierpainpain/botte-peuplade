@@ -34,6 +34,15 @@ MINECRAFT_USERNAME=<a-definir>
 MINECRAFT_PASSWORD=<a-definir>
 ```
 
+Lancer Lavalink :
+
+```bash
+cd lavalink
+java -Djdk.tls.client.protocols=TLSv1.1,TLSv1.2 -Xmx4G -jar Lavalink.jar
+```
+
+Si vous souhaiter utiliser la dernière version de LavaLink, vous pouvez la télécharger [ici](https://github.com/lavalink-devs/Lavalink/releases).
+
 Lancer le bot :
 
 ```bash
