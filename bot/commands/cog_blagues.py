@@ -11,6 +11,7 @@ class CogBlagues(commands.Cog, description="Balance ta blague"):
     def __init__(self, bot):
         self.bot = bot
         self.blagues_api = BlaguesAPI(Blagues.token)
+        print("CogBlagues chargé")
 
     @nextcord.slash_command(name="blague", description="Balance ta blague", guild_ids=[Guild.id])
     async def blague(self, interaction: nextcord.Interaction):

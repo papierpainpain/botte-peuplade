@@ -4,6 +4,8 @@ import logging
 from bot.botte import Botte
 from utils.constants import Bot
 
+print("Lancement du Botte")
+
 """
 Chargement des variables d'environnement
 """

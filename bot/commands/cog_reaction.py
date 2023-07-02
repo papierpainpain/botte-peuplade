@@ -32,6 +32,7 @@ class CogReaction(commands.Cog, description="Reaction commands"):
 
     def __init__(self, bot):
         self.bot = bot
+        print("CogReaction chargé")
 
     @nextcord.slash_command(name="prout", description="Prout général !!!", guild_ids=[Guild.id])
     async def prout(self, interaction: Interaction):

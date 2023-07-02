@@ -17,6 +17,7 @@ class CogMusic(commands.Cog, description="Listen and Control that music which yo
     def __init__(self, bot):
         self.bot = bot
         bot.loop.create_task(self.node_connect())
+        print("CogMusic chargé")
 
     async def node_connect(self):
         """

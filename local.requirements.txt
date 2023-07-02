@@ -1,5 +1,6 @@
 # Requirements for discord botte bot
 
+setuptools
 PyNaCl
 opuslib
 nextcord

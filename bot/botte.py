@@ -36,6 +36,7 @@ class Botte(commands.Bot):
         self.load_extension("bot.commands.cog_minecraft")
         self.load_extension("bot.commands.cog_music")
         self.load_extension("bot.commands.cog_reaction")
+        self.load_extension("bot.commands.cog_system")
 
     def add_listeners(self):
         """

@@ -12,6 +12,7 @@ class CogMinecraft(commands.Cog, description="Minecraft commands"):
 
     def __init__(self, bot):
         self.bot = bot
+        print("CogMinecraft chargé")
 
     @nextcord.slash_command(name="mc-status", description="Retournes le status du serveur Minecraft", guild_ids=[Guild.id])
     async def minecraft_status(self, interaction: nextcord.Interaction, mc_name: str):
