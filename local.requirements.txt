@@ -1,0 +1,7 @@
+# Requirements for discord botte bot
+
+PyNaCl
+opuslib
+nextcord
+python-dotenv
+humanfriendly

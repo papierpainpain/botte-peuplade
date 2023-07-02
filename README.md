@@ -32,6 +32,8 @@ MINECRAFT_HOST=<a-definir>
 MINECRAFT_PORT=<a-definir>
 MINECRAFT_USERNAME=<a-definir>
 MINECRAFT_PASSWORD=<a-definir>
+# BLAGUES
+BLAGUE_API_TOKEN=<token-de-l-api-de-blagues>
 ```
 
 Lancer Lavalink :

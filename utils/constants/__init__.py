@@ -31,6 +31,10 @@ class Minecraft:
     username = environ.get("MINECRAFT_USERNAME")
     password = environ.get("MINECRAFT_PASSWORD")
 
+class Blagues:
+    load_dotenv() # TODO: Trouver comment éviter cette duplication
+    token = environ.get("BLAGUE_API_TOKEN")
+
 class Colors:
     info = 0x00ccb2
     error = 0xf23f42

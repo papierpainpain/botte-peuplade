@@ -2,3 +2,4 @@
 
 nextwave
 paramiko
+blagues-api

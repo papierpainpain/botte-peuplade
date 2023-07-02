@@ -28,6 +28,8 @@ services:
       - MINECRAFT_PORT=${NASTICOT_PORT}
       - MINECRAFT_USERNAME=${MC_USERNAME}
       - MINECRAFT_PASSWORD=${MC_PASSWORD}
+      # BLAGUES
+      - BLAGUE_API_TOKEN=${BLAGUE_API_TOKEN}
     deploy:
       mode: replicated
       replicas: 1
