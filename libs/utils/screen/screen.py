@@ -8,7 +8,7 @@ import paramiko
 from subprocess import getoutput
 from os import system
 
-from utils.modules.screen.libs.errors import ScreenNotFoundError
+from libs.utils.screen.libs.errors import ScreenNotFoundError
 
 
 class Screen():

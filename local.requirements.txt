@@ -6,3 +6,5 @@ opuslib
 nextcord
 python-dotenv
 humanfriendly
+paramiko
+blagues-api

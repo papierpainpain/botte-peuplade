@@ -1,5 +1,4 @@
 # Requirements for discord botte bot
 
-nextwave
 paramiko
 blagues-api

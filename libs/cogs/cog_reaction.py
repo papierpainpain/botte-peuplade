@@ -6,8 +6,8 @@ from nextcord import User
 from nextcord.ext import commands
 import random
 
-from utils.constants import Guild
-from utils.messages import MessageType
+from libs.utils.constants import Guild
+from libs.utils.messages import MessageType
 
 ICON = "🥳"
 

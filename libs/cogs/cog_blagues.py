@@ -1,6 +1,6 @@
 import nextcord
 from nextcord.ext import commands
-from utils.constants import Blagues, Colors, Guild
+from libs.utils.constants import Blagues, Colors, Guild
 from blagues_api import BlaguesAPI
 
 ICON = "🤡"

@@ -1,14 +1,12 @@
 FROM registry.papierpain.fr/docker/nextcord:v1.1.0
 
 LABEL Maintainer="PapierPain"
-LABEL Description="Discord container with Nextcord and lavalink"
+LABEL Description="Discord container for Botte Peuplade"
 
 WORKDIR /bot
 
 COPY . /bot
 
-RUN SODIUM_INSTALL=system python3 -m pip install -r /bot/requirements.txt && \
-    chmod a+x /bot/ci/entrypoint.sh
+RUN SODIUM_INSTALL=system python3 -m pip install -r /bot/requirements.txt
 
-ENTRYPOINT ["/bot/ci/entrypoint.sh"]
 CMD ["python3", "./main.py"]

@@ -1,6 +1,6 @@
 import nextcord
 
-from utils.constants import Colors
+from libs.utils.constants import Colors
 
 DEFAULT_TIMEOUT = 30
 

@@ -1,8 +1,3 @@
-variables:
-  VERSION:
-    value: $CI_COMMIT_REF_SLUG
-    description: Nom de la version
-
 include:
   - project: 'labo/cicd-templates'
     ref: master
@@ -20,19 +15,26 @@ deploy-stack:
   variables:
     INTERNAL_REGISTRY: "true"
   rules:
-    - if: $VERSION =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/ || $VERSION =~ /^[0-9]+\.[0-9]+\.[0-9]+$/ || $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
       variables:
-        APP_IMAGE: $CI_REGISTRY_IMAGE:${VERSION}
-    - if: $CI_COMMIT_REF_NAME == "master"
+        APP_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
       variables:
         APP_IMAGE: $CI_REGISTRY_IMAGE:latest
-    - if: $VERSION != "" || $CI_COMMIT_TAG || ( $CI_COMMIT_REF_NAME && $CI_COMMIT_REF_NAME != "master" )
+    - if: $CI_COMMIT_REF_NAME && $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
       variables:
-        APP_IMAGE: $CI_REGISTRY_IMAGE/test:${VERSION}
+        APP_IMAGE: $CI_REGISTRY_IMAGE/test:$CI_COMMIT_REF_NAME
 
 workflow:
-  name: 💥 $VERSION - (╯°□°)╯︵ ┻━┻ 💥
+  name: $WORKFLOW_NAME
   rules:
-    - if: $CI_PIPELINE_SOURCE == "web"
-      when: always
+    - if: $CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
+      variables:
+        WORKFLOW_NAME: 🚀 (╯°□°)╯︵ ┻━┻ $CI_PROJECT_NAME:$CI_COMMIT_TAG 🚀
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+      variables:
+        WORKFLOW_NAME: 🤖 (╯°□°)╯︵ ┻━┻ $CI_PROJECT_NAME:latest 🤖
+    - if: $CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_REF_NAME && $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
+      variables:
+        WORKFLOW_NAME: 🚚 Petit test... Tchou Tchou 🚚
     - when: never

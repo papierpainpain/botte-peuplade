@@ -3,7 +3,7 @@ import nextcord
 from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 
-from utils.constants import Colors, Guild
+from libs.utils.constants import Colors, Guild
 
 ICON = "⚙️"
 

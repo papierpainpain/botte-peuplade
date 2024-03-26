@@ -1,9 +1,9 @@
 import nextcord
 from nextcord.ext import commands
-from utils.messages import MessageType
+from libs.utils.messages import MessageType
 
-from utils.modules.screen import Screen
-from utils.constants import Guild, Minecraft
+from libs.utils.screen import Screen
+from libs.utils.constants import Guild, Minecraft
 
 ICON = "👾"
 

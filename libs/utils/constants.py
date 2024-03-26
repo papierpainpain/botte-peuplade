@@ -12,18 +12,6 @@ class Guild:
     load_dotenv() # TODO: Trouver comment éviter cette duplication
     id: int = int(environ.get("GUILD_ID"))
 
-class Spotify:
-    load_dotenv() # TODO: Trouver comment éviter cette duplication
-    client_id = environ.get("SPOTIFY_CLIENT_ID")
-    client_secret = environ.get("SPOTIFY_CLIENT_SECRET")
-
-class Lavalink:
-    load_dotenv() # TODO: Trouver comment éviter cette duplication
-    host = environ.get("LAVALINK_HOST")
-    port = int(environ.get("LAVALINK_PORT"))
-    password = environ.get("LAVALINK_PASSWORD")
-    https = False
-
 class Minecraft:
     load_dotenv() # TODO: Trouver comment éviter cette duplication
     host = environ.get("MINECRAFT_HOST")

@@ -1,9 +1,5 @@
 version: '3'
 
-configs:
-  lavalink-config:
-    file: application.yml
-
 services:
   app:
     image: ${APP_IMAGE}
@@ -16,13 +12,6 @@ services:
       - BOTTE_PREFIX=/
       # GUILD
       - GUILD_ID=${BOT_GUILD_ID}
-      # SPOTIFY
-      - SPOTIFY_CLIENT_ID=<id-du-client-spotify>
-      - SPOTIFY_CLIENT_SECRET=<secret-du-client-spotify>
-      # LAVALINK
-      - LAVALINK_HOST=lavalink
-      - LAVALINK_PORT=2333
-      - LAVALINK_PASSWORD=${BOT_LAVALINK_PASSWORD}
       # MINECRAFT
       - MINECRAFT_HOST=${NASTICOT_IP}
       - MINECRAFT_PORT=${NASTICOT_PORT}
@@ -37,23 +26,3 @@ services:
         constraints: [node.role == manager]
       restart_policy:
         condition: on-failure
-    networks:
-      - cloud-botte
-
-  lavalink:
-    image: fredboat/lavalink:latest
-    deploy:
-      restart_policy:
-        condition: on-failure
-      mode: replicated
-      replicas: 1
-      placement:
-        constraints: [node.role == manager]
-    configs:
-      - source: lavalink-config
-        target: /opt/Lavalink/application.yml
-    networks:
-      - cloud-botte
-
-networks:
-  cloud-botte: {}

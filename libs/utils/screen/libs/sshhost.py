@@ -1,6 +1,6 @@
 import paramiko
 
-from utils.constants import Minecraft
+from libs.utils.constants import Minecraft
 
 
 def getoutput(command):

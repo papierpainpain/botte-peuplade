@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
 import logging
 
-from bot.botte import Botte
-from utils.constants import Bot
+from libs.botte import Botte
+from libs.utils.constants import Bot
 
 print("Lancement du Botte")
 
