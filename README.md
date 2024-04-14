@@ -27,6 +27,8 @@ MINECRAFT_USERNAME=<a-definir>
 MINECRAFT_PASSWORD=<a-definir>
 # BLAGUES
 BLAGUE_API_TOKEN=<token-de-l-api-de-blagues>
+# NUAGE
+PLP_API_TOKEN=<token-pour-les-sons>
 ```
 
 Lancer le bot :

@@ -1,9 +1,9 @@
 include:
-  - project: 'labo/cicd-templates'
+  - project: "labo/cicd-templates"
     ref: master
     file:
-      - '/templates/build-docker.gitlab-ci.yml'
-      - '/templates/deploy-swarm.gitlab-ci.yml'
+      - "/templates/build-docker.gitlab-ci.yml"
+      - "/templates/deploy-swarm.gitlab-ci.yml"
 
 build-docker:
   extends: .template-build-docker

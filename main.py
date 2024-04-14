@@ -1,27 +1,27 @@
 from dotenv import load_dotenv
-import logging
 
 from libs.botte import Botte
 from libs.utils.constants import Bot
-
-print("Lancement du Botte")
-
-"""
-Chargement des variables d'environnement
-"""
-load_dotenv()
+from libs.utils.logger import create_logger
 
 """
 Configuration du logger
 """
-logger = logging.getLogger('BOTTE')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='nextcord.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
+logger = create_logger('main')
+
+"""
+Chargement des variables d'environnement
+"""
+logger.debug("Chargement des variables d'environnement")
+load_dotenv()
 
 """
 Lancement du Botte
 """
-botte = Botte()
-botte.run(Bot.token)
+try:
+    logger.info("Lancement du Botte")
+    botte = Botte()
+    botte.run(Bot.token)
+except Exception as e:
+    logger.error(f"Erreur lors du lancement du Botte : {e}")
+    exit(1)

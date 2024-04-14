@@ -1,5 +1,6 @@
 import nextcord
 from nextcord.ext import commands
+from libs.utils.logger import create_logger
 from libs.utils.messages import MessageType
 
 from libs.utils.screen import Screen
@@ -12,7 +13,9 @@ class CogMinecraft(commands.Cog, description="Minecraft commands"):
 
     def __init__(self, bot):
         self.bot = bot
-        print("CogMinecraft chargé")
+
+        self._logger = create_logger(self.__class__.__name__)
+        self._logger.info(f"{self.__class__.__name__} chargé")
 
     @nextcord.slash_command(name="mc-status", description="Retournes le status du serveur Minecraft", guild_ids=[Guild.id])
     async def minecraft_status(self, interaction: nextcord.Interaction, mc_name: str):
@@ -26,12 +29,17 @@ class CogMinecraft(commands.Cog, description="Minecraft commands"):
             Nom du serveur Minecraft
         """
 
+        self._logger.debug(
+            f"Slash command {self.minecraft_status.name} called")
+
         screen = Screen("mc-" + mc_name, False, Minecraft.host,
                         Minecraft.username, Minecraft.password, Minecraft.port)
 
         if screen.exists:
+            self._logger.info(f"{mc_name} est en ligne !")
             await MessageType.info(interaction, f"{mc_name} est en ligne !", ICON)
         else:
+            self._logger.error(f"{mc_name} est hors ligne !")
             await MessageType.error(interaction, f"{mc_name} est hors ligne !", ICON)
 
     @nextcord.slash_command(name="mc-start", description="Démarrer le serveur Minecraft", guild_ids=[Guild.id])
@@ -46,10 +54,14 @@ class CogMinecraft(commands.Cog, description="Minecraft commands"):
             Nom du serveur Minecraft
         """
 
+        self._logger.debug(
+            f"Slash command {self.minecraft_start.name} called")
+
         # Check if screen with mc-* name exists
         screen_list = Screen.list(
             Minecraft.host, Minecraft.username, Minecraft.password, Minecraft.port)
         if screen_list and any([screen.name.startswith("mc-") for screen in screen_list]):
+            self._logger.error("Un serveur Minecraft est déjà en ligne !")
             await MessageType.error(interaction, f"Un serveur Minecraft est déjà en ligne !", ICON)
             return
 
@@ -58,6 +70,7 @@ class CogMinecraft(commands.Cog, description="Minecraft commands"):
                             Minecraft.username, Minecraft.password, Minecraft.port)
             screen.send_commands(f"/home/minecraft/{mc_name}/start.sh")
 
+            self._logger.info(f"{mc_name} est bientôt en ligne !")
             await MessageType.info(interaction, f"{mc_name} est bientôt en ligne !", ICON)
 
     @nextcord.slash_command(name="mc-stop", description="Arrêter le serveur Minecraft", guild_ids=[Guild.id])
@@ -72,12 +85,16 @@ class CogMinecraft(commands.Cog, description="Minecraft commands"):
             Nom du serveur Minecraft
         """
 
+        self._logger.debug(
+            f"Slash command {self.minecraft_stop.name} called")
+
         screen = Screen("mc-" + mc_name, False, Minecraft.host,
                         Minecraft.username, Minecraft.password, Minecraft.port)
 
         screen.send_commands(f"stop")
         screen.kill()
 
+        self._logger.info(f"{mc_name} est hors ligne !")
         await MessageType.info(interaction, f"{mc_name} est hors ligne !", ICON)
 
     @nextcord.slash_command(name="mc-restart", description="Redémarrer le serveur Minecraft", guild_ids=[Guild.id])
@@ -92,6 +109,9 @@ class CogMinecraft(commands.Cog, description="Minecraft commands"):
             Nom du serveur Minecraft
         """
 
+        self._logger.debug(
+            f"Slash command {self.minecraft_restart.name} called")
+
         screen = Screen("mc-" + mc_name, False, Minecraft.host,
                         Minecraft.username, Minecraft.password, Minecraft.port)
         screen.send_commands(f"stop")
@@ -99,6 +119,7 @@ class CogMinecraft(commands.Cog, description="Minecraft commands"):
         screen.initialize()
         screen.send_commands(f"/home/minecraft/{mc_name}/start.sh")
 
+        self._logger.info(f"{mc_name} est bientôt en ligne !")
         await MessageType.info(interaction, f"{mc_name} est en ligne !", ICON)
 
 

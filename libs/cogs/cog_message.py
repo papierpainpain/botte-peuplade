@@ -1,5 +1,7 @@
 from nextcord.ext import commands
 
+from libs.utils.logger import create_logger
+
 
 class CogMessage(commands.Cog):
     """
@@ -11,14 +13,15 @@ class CogMessage(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+        self._logger = create_logger(self.__class__.__name__)
+        self._logger.info(f"{self.__class__.__name__} chargé")
+
     @commands.Cog.listener()
     async def on_message(self, message):
+        self._logger.debug(f"Listener {self.on_message.__name__} called")
+
         if message.author == self.bot.user:
             return
-
-        # Si jamais le text enregistré correspond à une commande alors on appelle la commande associée
-        if message.content.startswith(str(self.bot.command_prefix)):
-            await self.bot.process_commands(message)
 
         msg_lower = message.content.lower()
 

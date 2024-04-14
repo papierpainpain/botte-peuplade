@@ -3,6 +3,8 @@ from nextcord.ext import commands
 from libs.utils.constants import Blagues, Colors, Guild
 from blagues_api import BlaguesAPI
 
+from libs.utils.logger import create_logger
+
 ICON = "🤡"
 
 
@@ -11,7 +13,9 @@ class CogBlagues(commands.Cog, description="Balance ta blague"):
     def __init__(self, bot):
         self.bot = bot
         self.blagues_api = BlaguesAPI(Blagues.token)
-        print("CogBlagues chargé")
+
+        self._logger = create_logger(self.__class__.__name__)
+        self._logger.info(f"{self.__class__.__name__} chargé")
 
     @nextcord.slash_command(name="blague", description="Balance ta blague", guild_ids=[Guild.id])
     async def blague(self, interaction: nextcord.Interaction):
@@ -21,6 +25,8 @@ class CogBlagues(commands.Cog, description="Balance ta blague"):
         Args:
             interaction (nextcord.Interaction): Interaction.
         """
+
+        self._logger.debug(f"Slash command {self.blague.name} called")
 
         blague = await self.blagues_api.random()
 

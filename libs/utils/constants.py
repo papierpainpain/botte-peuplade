@@ -23,6 +23,10 @@ class Blagues:
     load_dotenv() # TODO: Trouver comment éviter cette duplication
     token = environ.get("BLAGUE_API_TOKEN")
 
+class Nuage:
+    load_dotenv() # TODO: Trouver comment éviter cette duplication
+    token = environ.get("PLP_API_TOKEN")
+
 class Colors:
     info = 0x00ccb2
     error = 0xf23f42

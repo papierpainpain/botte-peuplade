@@ -7,6 +7,7 @@ from nextcord.ext import commands
 import random
 
 from libs.utils.constants import Guild
+from libs.utils.logger import create_logger
 from libs.utils.messages import MessageType
 
 ICON = "🥳"
@@ -32,12 +33,16 @@ class CogReaction(commands.Cog, description="Reaction commands"):
 
     def __init__(self, bot):
         self.bot = bot
-        print("CogReaction chargé")
+
+        self._logger = create_logger(self.__class__.__name__)
+        self._logger.info(f"{self.__class__.__name__} chargé")
 
     @nextcord.slash_command(name="prout", description="Prout général !!!", guild_ids=[Guild.id])
     async def prout(self, interaction: Interaction):
         """Fait un prout à tout le monde.
         """
+
+        self._logger.debug(f"Slash command {self.prout.name} called")
 
         await interaction.send("@here :dash:")
 
@@ -46,20 +51,29 @@ class CogReaction(commands.Cog, description="Reaction commands"):
         """Fait caca sur les messages de quelqu'un.
         """
 
+        self._logger.debug(
+            f"Slash command {self.poop_edition.name} called")
+
         if status == "add":
             if user not in poopEdition:
                 poopEdition.append(user)
+                self._logger.info(f"{user.name} est poopé !")
                 await interaction.send("{} 💩 Tu as été poopé !".format(user.mention))
             else:
                 poopEdition.append(interaction.user)
+                self._logger.info(
+                    f"{user.name} est déjà poopé ! Tu deviens un poopé !")
                 await interaction.send("{} est déjà poopé ! Tu deviens un poopé !".format(user.mention))
         elif status == "remove":
             if user in poopEdition:
                 poopEdition.remove(user)
+                self._logger.info(f"{user.name} n'est plus poopé !")
                 await interaction.send("{} 💩 Tu n'es plus poopé !".format(user.mention))
             else:
+                self._logger.info(f"{user.name} est déjà propre !")
                 await interaction.send("{} est déjà propre !".format(user.mention))
         else:
+            self._logger.error("Perdu ! 😢")
             await interaction.send("Perdu ! 😢")
 
     @nextcord.slash_command(name="heart", description="Coeur sur toi ♥", guild_ids=[Guild.id])
@@ -67,19 +81,27 @@ class CogReaction(commands.Cog, description="Reaction commands"):
         """Fait des coeurs sur les messages de quelqu'un.
         """
 
+        self._logger.debug(
+            f"Slash command {self.coeur_edition.name} called")
+
         if status == "add":
             if user not in coeursMignons:
                 coeursMignons.append(user)
+                self._logger.info(f"{user.name} est un coeur !")
                 await interaction.send("{} ♥ Coeur sur toi !".format(user.mention))
             else:
+                self._logger.info(f"{user.name} est déjà un coeur !")
                 await interaction.send("Tu es trop gentil, mais {} est déjà un coeur !".format(user.mention))
         elif status == "remove":
             if user in coeursMignons:
                 coeursMignons.remove(user)
+                self._logger.info(f"{user.name} n'est plus un coeur !")
                 await interaction.send("{} Tu n'es plus coeur 😢".format(user.mention))
             else:
+                self._logger.info(f"{user.name} n'est pas un coeur !")
                 await interaction.send("{} n'est pas un coeur !".format(user.mention))
         else:
+            self._logger.error("Perdu ! 😢")
             await interaction.send("Perdu ! 😢")
 
     @nextcord.slash_command(name="taper", description="Je vais te taper !", guild_ids=[Guild.id])
@@ -93,6 +115,8 @@ class CogReaction(commands.Cog, description="Reaction commands"):
         user: User
             Utilisateur à taper
         """
+
+        self._logger.debug(f"Slash command {self.taper.name} called")
 
         await MessageType.info(interaction, f"Destruction de {user.name} en cours...", ICON)
 
@@ -119,15 +143,21 @@ class CogReaction(commands.Cog, description="Reaction commands"):
             Mot doux à envoyer
         """
 
+        self._logger.debug(f"Slash command {self.debout.name} called")
+
         await MessageType.info(interaction, f"Opération réveil de {user.name} en cours...", ICON)
 
         # Envoi de 20 messages à l'utilisateur
         for _ in range(20):
             sleep(.5)
+            self._logger.error(f"Réveil de {user.name} en cours...")
             await MessageType.error(user, f"{motDoux}", ICON, delete_after=120)
 
     @commands.Cog.listener()
     async def on_message(self, message):
+
+        self._logger.debug(f"Listener {self.on_message.__name__} called")
+
         for user in poopEdition:
             if message.author.id == user.id:
                 await message.add_reaction('💩')

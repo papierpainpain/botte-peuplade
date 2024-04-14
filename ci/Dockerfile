@@ -1,4 +1,4 @@
-FROM registry.papierpain.fr/docker/nextcord:v1.1.0
+FROM registry.papierpain.fr/docker/nextcord:1.2.0
 
 LABEL Maintainer="PapierPain"
 LABEL Description="Discord container for Botte Peuplade"
