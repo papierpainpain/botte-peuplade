@@ -1,6 +1,6 @@
 import random
 import nextcord
-from nextcord import Interaction
+from nextcord import Interaction, SlashOption
 from nextcord.ext import tasks, commands
 
 from libs.utils.constants import Guild, Nuage
@@ -17,8 +17,9 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
     """Perturbateur sonore
     """
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: commands.Bot):
+        self.bot: commands.Bot = bot
+        self.voice = None
 
         self._logger = create_logger(self.__class__.__name__)
         self._logger.info(f"{self.__class__.__name__} chargé")
@@ -51,13 +52,22 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
 
         try:
             if not before.channel and after.channel and not after.channel.guild.voice_client:
-                self._logger.debug(f"Connection en cours à '{after.channel.name}'")
-                voice = await after.channel.connect()
+                self._logger.debug(f"Connection en cours à '{
+                                   after.channel.name}'")
+                self.voice = await after.channel.connect()
 
-                self._logger.info(f"Une menace a été détectée dans {after.channel.name}")
-                voice.play(nextcord.FFmpegPCMAudio(f"libs/assets/avast.mp3"))
+                self._logger.info(f"Une menace a été détectée dans {
+                                  after.channel.name}")
+                self.voice.play(nextcord.FFmpegPCMAudio(
+                    f"libs/assets/avast.mp3"))
 
-                self.perturbateur_sonore.start(voice)
+                self.perturbateur_sonore.start(self.voice)
+            elif not before.channel and after.channel and member.id != self.bot.user.id:
+                self._logger.info(f"{member.display_name} a rejoint {
+                                  after.channel.name}")
+                if self.voice and self.voice.channel == after.channel and not self.voice.is_playing():
+                    self.voice.play(nextcord.FFmpegPCMAudio(
+                        f"libs/assets/avast.mp3"))
 
             if before.channel and not after.channel and before.channel.guild.voice_client and len(before.channel.members) == 1:
                 self.perturbateur_sonore.cancel()
@@ -100,7 +110,8 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
             if not voice.is_playing():
                 voice.play(source)
             else:
-                self._logger.warning("Le bot est déjà en train de jouer un son")
+                self._logger.warning(
+                    "Le bot est déjà en train de jouer un son")
         except Exception as e:
             self._logger.error(f"Erreur lors de la perturbation sonore: {e}")
         finally:
@@ -128,6 +139,65 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
 
         self._logger.debug(f"Sound bank reloaded: {self.sound_bank}")
         await MessageType.info(interaction, f"Re-chargement des sons", ICON)
+
+    @commands.is_owner()
+    @nextcord.slash_command(name="connect-perturbateur", description="Connexion du perturbateur sonore", guild_ids=[Guild.id])
+    async def connect_perturbateur(self, interaction: Interaction, voice_channel: nextcord.VoiceChannel = SlashOption(name="channel", description="Channel vocal", required=True), force: bool = SlashOption(name="force", description="Forcer la connexion", required=False, default=False)):
+        """Connexion du perturbateur sonore
+
+        Parameters
+        ----------
+        interaction: nextcord.Interaction
+            Interaction du slash command
+        voice_channel: nextcord.VoiceChannel
+            Channel vocal
+        force: bool
+            Forcer la connexion
+
+        Returns
+        -------
+        None
+        """
+
+        if not self.voice or (self.voice and force):
+            if self.voice:
+                self.perturbateur_sonore.cancel()
+                await self.voice.disconnect()
+
+            self.voice = await voice_channel.connect()
+            self.perturbateur_sonore.start(self.voice)
+
+            self._logger.debug(f"Bot connecté à {voice_channel.name}")
+            await MessageType.info(interaction, f"Connexion à {voice_channel.name}", ICON)
+        else:
+            self._logger.warning(
+                "Le botte est déjà connecté à un channel vocal")
+            await MessageType.error(interaction, f"Le botte est déjà connecté (faire force pour le déconnecter)", ICON)
+
+    @commands.is_owner()
+    @nextcord.slash_command(name="débrancher-mamie", description="Déconnexion du perturbateur sonore", guild_ids=[Guild.id])
+    async def debrancher_mamie(self, interaction: Interaction):
+        """Déconnexion du perturbateur sonore
+
+        Parameters
+        ----------
+        interaction: nextcord.Interaction
+            Interaction du slash command
+
+        Returns
+        -------
+        None
+        """
+
+        if self.voice:
+            self.perturbateur_sonore.cancel()
+            await self.voice.disconnect()
+
+            self._logger.debug("Botte déconnecté")
+            await MessageType.info(interaction, f"Déconnexion", ICON)
+        else:
+            self._logger.warning("Le botte n'est pas connecté")
+            await MessageType.error(interaction, f"Le bot n'est pas connecté", ICON)
 
 
 def setup(bot: commands.Bot):
