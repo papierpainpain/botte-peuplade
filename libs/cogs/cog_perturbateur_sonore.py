@@ -79,7 +79,7 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
             self._logger.error(f"Erreur lors de la connexion/déconnexion: {e}")
 
     # Scheduled task
-    @tasks.loop(minutes=4.5)
+    @tasks.loop(minutes=7.0)
     async def perturbateur_sonore(self, voice: nextcord.VoiceClient = None):
         """Perturbation sonore
 
@@ -93,12 +93,11 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
         None
         """
 
-        # Get random boolean with a chance of 1/60
-        if not random.choice([True, False] + [False]*3):
+        if not random.choice([True, False]):
             self._logger.debug("Pas de perturbation sonore")
             return
 
-        self._logger.debug(f"Loop {self.perturbateur_sonore.name} called")
+        self._logger.debug(f"Loop perturbateur_sonore called")
 
         try:
             song = random.choice(self.sound_bank)
