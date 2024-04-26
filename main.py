@@ -20,8 +20,10 @@ Lancement du Botte
 """
 try:
     logger.info("Lancement du Botte")
+    print(Bot.GUILDS)
+    # exit(1)
     botte = Botte()
-    botte.run(Bot.token)
+    botte.run(Bot.TOKEN)
 except Exception as e:
     logger.error(f"Erreur lors du lancement du Botte : {e}")
     exit(1)

@@ -21,7 +21,7 @@ class Botte(commands.Bot):
         intents.message_content = True
         intents.members = True
 
-        super().__init__(command_prefix=Bot.prefix,
+        super().__init__(command_prefix=Bot.PREFIX,
                          intents=intents, help_command=None)
 
         self._logger.debug("Chargement des cogs")

@@ -3,7 +3,7 @@ import nextcord
 from nextcord import Interaction, SlashOption
 from nextcord.ext import tasks, commands
 
-from libs.utils.constants import Guild, Nuage
+from libs.utils.constants import Bot, Nuage
 from libs.utils.logger import create_logger
 from libs.utils.messages import MessageType
 from libs.utils.nuage import NuageRepo
@@ -24,7 +24,7 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
         self._logger = create_logger(self.__class__.__name__)
         self._logger.info(f"{self.__class__.__name__} chargé")
 
-        self.nuage_api = NuageRepo(PATRICK_LE_PIGEON_REPO_ID, Nuage.token)
+        self.nuage_api = NuageRepo(PATRICK_LE_PIGEON_REPO_ID, Nuage.TOKEN)
         self.sound_bank = self.nuage_api.list_items_in_directory(
             PATRICK_LE_PIGEON_SOUND_DIR)
         self._logger.debug(f"Sound bank: {self.sound_bank}")
@@ -72,6 +72,7 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
             if before.channel and not after.channel and before.channel.guild.voice_client and len(before.channel.members) == 1:
                 self.perturbateur_sonore.cancel()
                 await before.channel.guild.voice_client.disconnect()
+                self.voice = None
 
                 self._logger.info(f"Bot déconnecté à {before.channel.name}")
         except Exception as e:
@@ -117,7 +118,7 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
         finally:
             self._logger.debug("Perturbation sonore terminée")
 
-    @nextcord.slash_command(name="reload-perturbateur", description="Re-chargement des sons", guild_ids=[Guild.id])
+    @nextcord.slash_command(name="reload-perturbateur", description="Re-chargement des sons", guild_ids=Bot.GUILDS)
     async def reload_perturbateur(self, interaction: Interaction) -> None:
         """Re-chargement des sons
 
@@ -141,7 +142,7 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
         await MessageType.info(interaction, f"Re-chargement des sons", ICON)
 
     @commands.is_owner()
-    @nextcord.slash_command(name="connect-perturbateur", description="Connexion du perturbateur sonore", guild_ids=[Guild.id])
+    @nextcord.slash_command(name="connect-perturbateur", description="Connexion du perturbateur sonore", guild_ids=Bot.GUILDS)
     async def connect_perturbateur(self, interaction: Interaction, voice_channel: nextcord.VoiceChannel = SlashOption(name="channel", description="Channel vocal", required=True), force: bool = SlashOption(name="force", description="Forcer la connexion", required=False, default=False)):
         """Connexion du perturbateur sonore
 
@@ -175,7 +176,7 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
             await MessageType.error(interaction, f"Le botte est déjà connecté (faire force pour le déconnecter)", ICON)
 
     @commands.is_owner()
-    @nextcord.slash_command(name="débrancher-mamie", description="Déconnexion du perturbateur sonore", guild_ids=[Guild.id])
+    @nextcord.slash_command(name="débrancher-mamie", description="Déconnexion du perturbateur sonore", guild_ids=Bot.GUILDS)
     async def debrancher_mamie(self, interaction: Interaction):
         """Déconnexion du perturbateur sonore
 

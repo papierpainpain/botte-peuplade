@@ -22,7 +22,7 @@ class MessageType():
         """
 
         embed = nextcord.Embed(
-            title=f"{default_icon} | {message}", color=Colors.error)
+            title=f"{default_icon} | {message}", color=Colors.ERROR)
         message: nextcord.Message = await interaction.send(embed=embed)
         return message, await message.delete(delay=delete_after)
 
@@ -38,7 +38,7 @@ class MessageType():
         """
 
         embed = nextcord.Embed(
-            title=f"{default_icon} | {message}", color=Colors.info)
+            title=f"{default_icon} | {message}", color=Colors.INFO)
         message: nextcord.Message = await interaction.send(embed=embed)
         return message, await message.delete(delay=delete_after)
 
@@ -54,6 +54,6 @@ class MessageType():
         """
 
         embed = nextcord.Embed(
-            title=f"{default_icon} | {message}", color=Colors.warning)
+            title=f"{default_icon} | {message}", color=Colors.WARNING)
         message: nextcord.Message = await interaction.send(embed=embed)
         return message, await message.delete(delay=delete_after)

@@ -8,7 +8,7 @@ import paramiko
 from subprocess import getoutput
 from os import system
 
-from libs.utils.screen.libs.errors import ScreenNotFoundError
+from libs.utils.screen.errors import ScreenNotFoundError
 
 
 class Screen():
@@ -149,7 +149,7 @@ class Screen():
         """Insert CTRL+C in the screen session."""
 
         self._screen_commands('eval "stuff \\003"')
-    
+
     def kill(self):
         """Kill the screen applications then close the screen"""
         self._screen_commands(f'stuff "exit" ', 'eval "stuff \\015"')

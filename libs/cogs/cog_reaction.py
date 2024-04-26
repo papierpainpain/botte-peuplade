@@ -6,7 +6,7 @@ from nextcord import User
 from nextcord.ext import commands
 import random
 
-from libs.utils.constants import Guild
+from libs.utils.constants import Bot
 from libs.utils.logger import create_logger
 from libs.utils.messages import MessageType
 
@@ -37,7 +37,7 @@ class CogReaction(commands.Cog, description="Reaction commands"):
         self._logger = create_logger(self.__class__.__name__)
         self._logger.info(f"{self.__class__.__name__} chargé")
 
-    @nextcord.slash_command(name="prout", description="Prout général !!!", guild_ids=[Guild.id])
+    @nextcord.slash_command(name="prout", description="Prout général !!!", guild_ids=Bot.GUILDS)
     async def prout(self, interaction: Interaction):
         """Fait un prout à tout le monde.
         """
@@ -46,7 +46,7 @@ class CogReaction(commands.Cog, description="Reaction commands"):
 
         await interaction.send("@here :dash:")
 
-    @nextcord.slash_command(name="poop", description="Caca sur toi ♥", guild_ids=[Guild.id])
+    @nextcord.slash_command(name="poop", description="Caca sur toi ♥", guild_ids=Bot.GUILDS)
     async def poop_edition(self, interaction: Interaction, user: User = SlashOption(name="user"), status: str = SlashOption(name="status", choices=["add", "remove"])):
         """Fait caca sur les messages de quelqu'un.
         """
@@ -76,7 +76,7 @@ class CogReaction(commands.Cog, description="Reaction commands"):
             self._logger.error("Perdu ! 😢")
             await interaction.send("Perdu ! 😢")
 
-    @nextcord.slash_command(name="heart", description="Coeur sur toi ♥", guild_ids=[Guild.id])
+    @nextcord.slash_command(name="heart", description="Coeur sur toi ♥", guild_ids=Bot.GUILDS)
     async def coeur_edition(self, interaction: Interaction, status: str = SlashOption(name="status", choices=["add", "remove"]), user: User = SlashOption(name="user")):
         """Fait des coeurs sur les messages de quelqu'un.
         """
@@ -104,7 +104,7 @@ class CogReaction(commands.Cog, description="Reaction commands"):
             self._logger.error("Perdu ! 😢")
             await interaction.send("Perdu ! 😢")
 
-    @nextcord.slash_command(name="taper", description="Je vais te taper !", guild_ids=[Guild.id])
+    @nextcord.slash_command(name="taper", description="Je vais te taper !", guild_ids=Bot.GUILDS)
     async def taper(self, interaction: Interaction, user: User = SlashOption(name="user")):
         """Je vais te taper !
 
@@ -129,7 +129,7 @@ class CogReaction(commands.Cog, description="Reaction commands"):
         else:
             victimes.append({"user": user, "compteur": 4})
 
-    @nextcord.slash_command(name="debout", description="Debout la d'dans !!", guild_ids=[Guild.id])
+    @nextcord.slash_command(name="debout", description="Debout la d'dans !!", guild_ids=Bot.GUILDS)
     async def debout(self, interaction: Interaction, user: User = SlashOption(name="user"), motDoux: str = SlashOption(name="petit_message", default="Bouge toi !", description="Petit mot doux <3", required=False)):
         """Debout la d'dans !!
 
@@ -150,7 +150,7 @@ class CogReaction(commands.Cog, description="Reaction commands"):
         # Envoi de 20 messages à l'utilisateur
         for _ in range(20):
             sleep(.5)
-            self._logger.error(f"Réveil de {user.name} en cours...")
+            self._logger.debug(f"Réveil de {user.name} en cours...")
             await MessageType.error(user, f"{motDoux}", ICON, delete_after=120)
 
     @commands.Cog.listener()

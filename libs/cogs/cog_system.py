@@ -3,7 +3,7 @@ import nextcord
 from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 
-from libs.utils.constants import Colors, Guild
+from libs.utils.constants import Colors, Bot
 from libs.utils.logger import create_logger
 
 ICON = "⚙️"
@@ -34,11 +34,11 @@ class CogSystem(commands.Cog, description="Commandes système"):
         self._logger.debug(f"Les choix : {choices}")
         self._logger.info(f"Le choix choisi : {choice}")
         embed = nextcord.Embed(
-            title=f"Le choix choisi : {choice}", description=description, color=Colors.info)
+            title=f"Le choix choisi : {choice}", description=description, color=Colors.INFO)
         embed.set_author(name="Le déciseur de choix", icon_url=ICON_LE_DECIDEUR_DE_CHOIX)
         await interaction.send(embed=embed)
 
-    @nextcord.slash_command(name="choose", description="Choix aléatoire", guild_ids=[Guild.id])
+    @nextcord.slash_command(name="choose", description="Choix aléatoire", guild_ids=Bot.GUILDS)
     async def choose(self, interaction: Interaction, choices: str = SlashOption(name="choix", description="Les choix à faire", required=True)):
         """
         Fait un choix aléatoire parmi une liste de choix.
@@ -51,7 +51,7 @@ class CogSystem(commands.Cog, description="Commandes système"):
         self._logger.debug(f"Slash command {self.choose.name} called")
         await self._random_choose(interaction, choices.split(","))
 
-    @nextcord.slash_command(name="père-de-chaussure", description="Choix aléatoire", guild_ids=[Guild.id])
+    @nextcord.slash_command(name="père-de-chaussure", description="Choix aléatoire", guild_ids=Bot.GUILDS)
     async def pere_de_chaussure(self, interaction: Interaction, choices: str = SlashOption(name="choix", description="Les choix à faire", required=True)):
         """
         Fait un choix aléatoire parmi une liste de choix.
@@ -64,7 +64,7 @@ class CogSystem(commands.Cog, description="Commandes système"):
         self._logger.debug(f"Slash command {self.pere_de_chaussure.name} called")
         await self._random_choose(interaction, choices.split(","))
 
-    @nextcord.slash_command(name="saussure", description="Choix aléatoire", guild_ids=[Guild.id])
+    @nextcord.slash_command(name="saussure", description="Choix aléatoire", guild_ids=Bot.GUILDS)
     async def saussure(self, interaction: Interaction, choices: str = SlashOption(name="choix", description="Les choix à faire", required=True)):
         """
         Fait un choix aléatoire parmi une liste de choix.

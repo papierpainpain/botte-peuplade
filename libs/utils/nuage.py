@@ -40,9 +40,15 @@ class NuageRepo:
         path = path.replace(" ", "%20").replace("/", "%2F")
 
         url = f"{API_NUAGE_REPO}/dir/?path={path}&type=f"
-        response = requests.get(url, headers=self.headers).json()
+        response = requests.get(url, headers=self.headers)
+        print(response)
 
-        return response["dirent_list"]
+        if response.status_code == 401:
+            raise ValueError(f"Unauthorized access: {response.json()}")
+        elif response.status_code // 100 == 2:
+            return response.json()["dirent_list"]
+        else:
+            raise FileNotFoundError("Directory not found")
 
     def get_download_link(self, path) -> str:
         """Récupère le lien de téléchargement d'un fichier
