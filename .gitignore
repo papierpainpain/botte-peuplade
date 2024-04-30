@@ -10,3 +10,4 @@ bot-env
 # LOG FILE
 nextcord.log
 **/logs
+tmp/

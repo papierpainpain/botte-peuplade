@@ -1,7 +1,9 @@
+import os
 import random
 import nextcord
 from nextcord import Interaction, SlashOption
 from nextcord.ext import tasks, commands
+import requests
 
 from libs.utils.constants import Bot, Nuage
 from libs.utils.logger import create_logger
@@ -93,29 +95,77 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
         None
         """
 
+        self._logger.debug(f"Loop perturbateur_sonore called")
+
         if not random.choice([True, False]):
             self._logger.debug("Pas de perturbation sonore")
             return
 
-        self._logger.debug(f"Loop perturbateur_sonore called")
+        if voice.is_playing():
+            self._logger.warning(
+                "Le bot est déjà en train de jouer un son")
+            return
 
-        try:
-            song = random.choice(self.sound_bank)
-            self._logger.debug(f"Playing {song["name"]}")
-            song_download_link = self.nuage_api.get_download_link(
-                f"{PATRICK_LE_PIGEON_SOUND_DIR}{song["name"]}")
-            self._logger.debug(f"Download link: {song_download_link}")
-            source = nextcord.FFmpegPCMAudio(song_download_link)
+        song = random.choice(self.sound_bank)
+        self._logger.debug(f"Playing {song["name"]}")
 
-            if not voice.is_playing():
+        # Try and catch to avoid any errors and retry 3 times before giving up
+        retries = 3
+        while retries > 0:
+            try:
+                song_download_link = self.nuage_api.get_download_link(
+                    f"{PATRICK_LE_PIGEON_SOUND_DIR}{song["name"]}")
+                self._logger.debug(f"Download link: {song_download_link}")
+
+                song_local_path = self._download_file(song_download_link)
+                self._logger.debug(f"Local path: {song_local_path}")
+
+                source = nextcord.FFmpegPCMAudio(song_local_path)
+
                 voice.play(source)
-            else:
-                self._logger.warning(
-                    "Le bot est déjà en train de jouer un son")
-        except Exception as e:
-            self._logger.error(f"Erreur lors de la perturbation sonore: {e}")
-        finally:
-            self._logger.debug("Perturbation sonore terminée")
+                self._logger.debug("Perturbation sonore terminée")
+
+                break
+            except Exception as e:
+                self._logger.error(
+                    f"{4 - retries}/3 Erreur lors de la perturbation sonore: {e}")
+                retries -= 1
+        else:
+            self._logger.error(f"Impossible de jouer le son: {song["name"]}")
+
+    def _download_file(self, url: str) -> str:
+        """Télécharge un fichier
+
+        Parameters
+        ----------
+        url: str
+            URL du fichier
+
+        Returns
+        -------
+        str
+            Chemin du fichier téléchargé
+        """
+
+        local_filename = url.split("/")[-1]
+        download_base_path = "tmp"
+        if not os.path.exists(download_base_path):
+            os.makedirs(download_base_path)
+
+        local_path = f"{download_base_path}/{local_filename}"
+
+        if os.path.exists(local_path):
+            self._logger.debug(f"File already exists: {local_path}")
+        else:
+            self._logger.debug(f"Downloading {url} to {local_path}")
+
+            with requests.get(url, stream=True) as r:
+                r.raise_for_status()
+                with open(local_path, "wb") as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        f.write(chunk)
+
+        return local_path
 
     @nextcord.slash_command(name="reload-perturbateur", description="Re-chargement des sons", guild_ids=Bot.GUILDS)
     async def reload_perturbateur(self, interaction: Interaction) -> None:
@@ -136,6 +186,11 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
 
         self.sound_bank = self.nuage_api.list_items_in_directory(
             PATRICK_LE_PIGEON_SOUND_DIR)
+
+        # Remove files in tmp folder
+        if os.path.exists("tmp"):
+            for file in os.listdir("tmp"):
+                os.remove(f"tmp/{file}")
 
         self._logger.debug(f"Sound bank reloaded: {self.sound_bank}")
         await MessageType.info(interaction, f"Re-chargement des sons", ICON)
