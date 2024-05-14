@@ -3,16 +3,12 @@ import random
 import nextcord
 from nextcord import Interaction, SlashOption
 from nextcord.ext import tasks, commands
-import requests
 
-from libs.utils.constants import Bot, Nuage
+from libs.utils.constants import Bot
 from libs.utils.logger import create_logger
 from libs.utils.messages import MessageType
-from libs.utils.nuage import NuageRepo
 
 ICON = "🥳"
-PATRICK_LE_PIGEON_REPO_ID = "a4f091fe-640d-46f7-8cc4-b13d30af99af"
-PATRICK_LE_PIGEON_SOUND_DIR = "/Botte Peuplade/Sons qui font du bruit/"
 
 
 class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
@@ -26,9 +22,10 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
         self._logger = create_logger(self.__class__.__name__)
         self._logger.info(f"{self.__class__.__name__} chargé")
 
-        self.nuage_api = NuageRepo(PATRICK_LE_PIGEON_REPO_ID, Nuage.TOKEN)
-        self.sound_bank = self.nuage_api.list_items_in_directory(
-            PATRICK_LE_PIGEON_SOUND_DIR)
+        # Get songs (only mp3) from path ./assets
+        self.sound_bank = os.listdir("libs/assets")
+        self.sound_bank = [
+            song for song in self.sound_bank if song.endswith(".mp3")]
         self._logger.debug(f"Sound bank: {self.sound_bank}")
 
     @commands.Cog.listener()
@@ -61,7 +58,7 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
                 self._logger.info(f"Une menace a été détectée dans {
                                   after.channel.name}")
                 self.voice.play(nextcord.FFmpegPCMAudio(
-                    f"libs/assets/avast.mp3"))
+                    "libs/assets/avast.mp3"))
 
                 self.perturbateur_sonore.start(self.voice)
             elif not before.channel and after.channel and member.id != self.bot.user.id:
@@ -69,7 +66,7 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
                                   after.channel.name}")
                 if self.voice and self.voice.channel == after.channel and not self.voice.is_playing():
                     self.voice.play(nextcord.FFmpegPCMAudio(
-                        f"libs/assets/avast.mp3"))
+                        "libs/assets/avast.mp3"))
 
             if before.channel and not after.channel and before.channel.guild.voice_client and len(before.channel.members) == 1:
                 self.perturbateur_sonore.cancel()
@@ -107,24 +104,14 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
             return
 
         song = random.choice(self.sound_bank)
-        self._logger.debug(f"Playing {song["name"]}")
+        self._logger.debug(f"Playing {song}")
 
         # Try and catch to avoid any errors and retry 3 times before giving up
         retries = 3
         while retries > 0:
             try:
-                song_download_link = self.nuage_api.get_download_link(
-                    f"{PATRICK_LE_PIGEON_SOUND_DIR}{song["name"]}")
-                self._logger.debug(f"Download link: {song_download_link}")
-
-                song_local_path = self._download_file(song_download_link)
-                self._logger.debug(f"Local path: {song_local_path}")
-
-                source = nextcord.FFmpegPCMAudio(song_local_path)
-
-                voice.play(source)
+                voice.play(nextcord.FFmpegPCMAudio(f"libs/assets/{song}"))
                 self._logger.debug("Perturbation sonore terminée")
-
                 break
             except Exception as e:
                 self._logger.error(
@@ -132,68 +119,6 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
                 retries -= 1
         else:
             self._logger.error(f"Impossible de jouer le son: {song["name"]}")
-
-    def _download_file(self, url: str) -> str:
-        """Télécharge un fichier
-
-        Parameters
-        ----------
-        url: str
-            URL du fichier
-
-        Returns
-        -------
-        str
-            Chemin du fichier téléchargé
-        """
-
-        local_filename = url.split("/")[-1]
-        download_base_path = "tmp"
-        if not os.path.exists(download_base_path):
-            os.makedirs(download_base_path)
-
-        local_path = f"{download_base_path}/{local_filename}"
-
-        if os.path.exists(local_path):
-            self._logger.debug(f"File already exists: {local_path}")
-        else:
-            self._logger.debug(f"Downloading {url} to {local_path}")
-
-            with requests.get(url, stream=True) as r:
-                r.raise_for_status()
-                with open(local_path, "wb") as f:
-                    for chunk in r.iter_content(chunk_size=8192):
-                        f.write(chunk)
-
-        return local_path
-
-    @nextcord.slash_command(name="reload-perturbateur", description="Re-chargement des sons", guild_ids=Bot.GUILDS)
-    async def reload_perturbateur(self, interaction: Interaction) -> None:
-        """Re-chargement des sons
-
-        Parameters
-        ----------
-        interaction: nextcord.Interaction
-            Interaction du slash command
-
-        Returns
-        -------
-        None
-        """
-
-        self._logger.debug(
-            f"Slash command {self.reload_perturbateur.name} called")
-
-        self.sound_bank = self.nuage_api.list_items_in_directory(
-            PATRICK_LE_PIGEON_SOUND_DIR)
-
-        # Remove files in tmp folder
-        if os.path.exists("tmp"):
-            for file in os.listdir("tmp"):
-                os.remove(f"tmp/{file}")
-
-        self._logger.debug(f"Sound bank reloaded: {self.sound_bank}")
-        await MessageType.info(interaction, f"Re-chargement des sons", ICON)
 
     @commands.is_owner()
     @nextcord.slash_command(name="connect-perturbateur", description="Connexion du perturbateur sonore", guild_ids=Bot.GUILDS)
