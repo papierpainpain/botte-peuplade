@@ -23,7 +23,7 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
         self._logger.info(f"{self.__class__.__name__} chargé")
 
         # Get songs (only mp3) from path ./assets
-        self.sound_bank = os.listdir("libs/assets")
+        self.sound_bank = os.listdir("libs/assets/musics")
         self.sound_bank = [
             song for song in self.sound_bank if song.endswith(".mp3")]
         self._logger.debug(f"Sound bank: {self.sound_bank}")
@@ -58,7 +58,7 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
                 self._logger.info(f"Une menace a été détectée dans {
                                   after.channel.name}")
                 self.voice.play(nextcord.FFmpegPCMAudio(
-                    "libs/assets/avast.mp3"))
+                    "libs/assets/musics/avast.mp3"))
 
                 self.perturbateur_sonore.start(self.voice)
             elif not before.channel and after.channel and member.id != self.bot.user.id:
@@ -66,7 +66,7 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
                                   after.channel.name}")
                 if self.voice and self.voice.channel == after.channel and not self.voice.is_playing():
                     self.voice.play(nextcord.FFmpegPCMAudio(
-                        "libs/assets/avast.mp3"))
+                        "libs/assets/musics/avast.mp3"))
 
             if before.channel and not after.channel and before.channel.guild.voice_client and len(before.channel.members) == 1:
                 self.perturbateur_sonore.cancel()
@@ -110,7 +110,7 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
         retries = 3
         while retries > 0:
             try:
-                voice.play(nextcord.FFmpegPCMAudio(f"libs/assets/{song}"))
+                voice.play(nextcord.FFmpegPCMAudio(f"libs/assets/musics/{song}"))
                 self._logger.debug("Perturbation sonore terminée")
                 break
             except Exception as e:
@@ -178,6 +178,35 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
         else:
             self._logger.warning("Le botte n'est pas connecté")
             await MessageType.error(interaction, f"Le bot n'est pas connecté", ICON)
+
+    @nextcord.slash_command(name="rick-kayoux-ou-zomby", description="Demander à Rick Sanchez s'il préfère les KAYOUX ou les ZOMBY", guild_ids=Bot.GUILDS)
+    async def rick_kayoux_ou_zomby(self, interaction: Interaction):
+        """Demander à Rick Sanchez s'il préfère les KAYOUX ou les ZOMBY
+
+        Parameters
+        ----------
+        interaction: nextcord.Interaction
+            Interaction du slash command
+
+        Returns
+        -------
+        None
+        """
+
+        # Get the current voice channel of the user and connect the bot to it if it's not already connected
+        voice_channel = interaction.user.voice.channel
+        if not self.voice:
+            self.voice = await voice_channel.connect()
+
+        self._logger.debug(f"Rick Kayoux ou Zomby called")
+
+        # Get random sond between kayoux.mp3 and zomby.mp3
+        song = random.choice(["rick_kayoux.mp3", "rick_zomby.mp3"])
+
+        # Play the sound
+        self.voice.play(nextcord.FFmpegPCMAudio("libs/assets/rick_sanchez/" + song))
+
+        await MessageType.info(interaction, f"Rick Sanchez a parlé", ICON)
 
 
 def setup(bot: commands.Bot):
