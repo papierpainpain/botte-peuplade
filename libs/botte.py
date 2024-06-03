@@ -7,11 +7,25 @@ from libs.utils.logger import create_logger
 
 
 class Botte(commands.Bot):
-    """
-    Classe principale du Botte
+    """Classe principale du Botte
+
+    Attributes
+    ----------
+        _logger (Logger): Logger de la classe
+
+    Methods
+    -------
+        on_ready: Action à effectuer quand le bot est prêt
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """Initialisation du Botte
+
+        Les actions effectuées sont :
+            - Configuration des Intents Discord
+            - Chargement des cogs
+        """
+
         self._logger = create_logger(self.__class__.__name__)
         self._logger.info(f"{self.__class__.__name__} chargé")
 
@@ -29,9 +43,8 @@ class Botte(commands.Bot):
             if filename.endswith(".py"):
                 self.load_extension(f"libs.cogs.{filename[:-3]}")
 
-    async def on_ready(self):
-        """
-        Quand le bot est prêt
+    async def on_ready(self) -> None:
+        """Action à effectuer quand le bot est prêt
         """
 
         self._logger.info("Bot prêt")

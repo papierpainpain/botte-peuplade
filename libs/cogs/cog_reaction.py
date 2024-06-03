@@ -27,19 +27,46 @@ gifTaper = [
 
 
 class CogReaction(commands.Cog, description="Reaction commands"):
-    """
-    Listener pour les réactions
+    """Listener pour les réactions
+
+    Attributes
+    ----------
+    bot: commands.Bot
+        Bot
+    _logger: Logger
+        Logger de la classe
+
+    Methods
+    -------
+    prout: Fait un prout à tout le monde
+    poop_edition: Fait caca sur les messages de quelqu'un
+    coeur_edition: Fait des coeurs sur les messages de quelqu'un
+    taper: Je vais te taper !
+    debout: Debout la d'dans !!
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
+        """Initialisation du Cog
+
+        Parameters
+        ----------
+        bot: commands.Bot
+            Bot
+        """
+
         self.bot = bot
 
         self._logger = create_logger(self.__class__.__name__)
         self._logger.info(f"{self.__class__.__name__} chargé")
 
     @nextcord.slash_command(name="prout", description="Prout général !!!", guild_ids=Bot.GUILDS)
-    async def prout(self, interaction: Interaction):
+    async def prout(self, interaction: Interaction) -> None:
         """Fait un prout à tout le monde.
+
+        Parameters
+        ----------
+        interaction: nextcord.Interaction
+            Interaction du slash command
         """
 
         self._logger.debug(f"Slash command {self.prout.name} called")
@@ -47,8 +74,22 @@ class CogReaction(commands.Cog, description="Reaction commands"):
         await interaction.send("@here :dash:")
 
     @nextcord.slash_command(name="poop", description="Caca sur toi ♥", guild_ids=Bot.GUILDS)
-    async def poop_edition(self, interaction: Interaction, user: User = SlashOption(name="user"), status: str = SlashOption(name="status", choices=["add", "remove"])):
+    async def poop_edition(
+        self,
+        interaction: Interaction,
+        user: User = SlashOption(name="user"),
+        status: str = SlashOption(name="status", choices=["add", "remove"])
+    ) -> None:
         """Fait caca sur les messages de quelqu'un.
+
+        Parameters
+        ----------
+        interaction: nextcord.Interaction
+            Interaction du slash command
+        user: User
+            Utilisateur à poopé
+        status: str
+            Status de l'action (add ou remove)
         """
 
         self._logger.debug(
@@ -77,8 +118,22 @@ class CogReaction(commands.Cog, description="Reaction commands"):
             await interaction.send("Perdu ! 😢")
 
     @nextcord.slash_command(name="heart", description="Coeur sur toi ♥", guild_ids=Bot.GUILDS)
-    async def coeur_edition(self, interaction: Interaction, status: str = SlashOption(name="status", choices=["add", "remove"]), user: User = SlashOption(name="user")):
+    async def coeur_edition(
+        self,
+        interaction: Interaction,
+        status: str = SlashOption(name="status", choices=["add", "remove"]),
+        user: User = SlashOption(name="user")
+    ) -> None:
         """Fait des coeurs sur les messages de quelqu'un.
+
+        Parameters
+        ----------
+        interaction: nextcord.Interaction
+            Interaction du slash command
+        status: str
+            Status de l'action (add ou remove)
+        user: User
+            Utilisateur à coeur
         """
 
         self._logger.debug(
@@ -105,7 +160,7 @@ class CogReaction(commands.Cog, description="Reaction commands"):
             await interaction.send("Perdu ! 😢")
 
     @nextcord.slash_command(name="taper", description="Je vais te taper !", guild_ids=Bot.GUILDS)
-    async def taper(self, interaction: Interaction, user: User = SlashOption(name="user")):
+    async def taper(self, interaction: Interaction, user: User = SlashOption(name="user")) -> None:
         """Je vais te taper !
 
         Parameters
@@ -130,7 +185,13 @@ class CogReaction(commands.Cog, description="Reaction commands"):
             victimes.append({"user": user, "compteur": 4})
 
     @nextcord.slash_command(name="debout", description="Debout la d'dans !!", guild_ids=Bot.GUILDS)
-    async def debout(self, interaction: Interaction, user: User = SlashOption(name="user"), motDoux: str = SlashOption(name="petit_message", default="Bouge toi !", description="Petit mot doux <3", required=False)):
+    async def debout(
+        self,
+        interaction: Interaction,
+        user: User = SlashOption(name="user"),
+        motDoux: str = SlashOption(
+            name="petit_message", default="Bouge toi !", description="Petit mot doux <3", required=False)
+    ) -> None:
         """Debout la d'dans !!
 
         Parameters
@@ -154,7 +215,14 @@ class CogReaction(commands.Cog, description="Reaction commands"):
             await MessageType.error(user, f"{motDoux}", ICON, delete_after=120)
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: nextcord.Message) -> None:
+        """Listener pour les messages
+
+        Parameters
+        ----------
+        message: nextcord.Message
+            Message
+        """
 
         self._logger.debug(f"Listener {self.on_message.__name__} called")
 

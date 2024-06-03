@@ -10,15 +10,31 @@ ICON = "👾"
 
 
 class CogMinecraft(commands.Cog, description="Minecraft commands"):
+    """Minecraft commands
 
-    def __init__(self, bot):
+    Attributes
+    ----------
+    bot: commands.Bot
+        Bot
+    _logger: Logger
+        Logger de la classe
+
+    Methods
+    -------
+    minecraft_status: Return the status of the Minecraft server
+    minecraft_start: Start the Minecraft server
+    minecraft_stop: Stop the Minecraft server
+    minecraft_restart: Restart the Minecraft server
+    """
+
+    def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
 
         self._logger = create_logger(self.__class__.__name__)
         self._logger.info(f"{self.__class__.__name__} chargé")
 
     @nextcord.slash_command(name="mc-status", description="Retournes le status du serveur Minecraft", guild_ids=Bot.GUILDS)
-    async def minecraft_status(self, interaction: nextcord.Interaction, mc_name: str):
+    async def minecraft_status(self, interaction: nextcord.Interaction, mc_name: str) -> None:
         """Retournes le status du serveur Minecraft depuis son nom.
 
         Parameters
@@ -48,7 +64,7 @@ class CogMinecraft(commands.Cog, description="Minecraft commands"):
             await MessageType.error(interaction, f"Erreur lors de la récupération du status: \n{e}", ICON)
 
     @nextcord.slash_command(name="mc-start", description="Démarrer le serveur Minecraft", guild_ids=Bot.GUILDS)
-    async def minecraft_start(self, interaction: nextcord.Interaction, mc_name: str):
+    async def minecraft_start(self, interaction: nextcord.Interaction, mc_name: str) -> None:
         """Démarrer le serveur Minecraft depuis son nom.
 
         Parameters
@@ -85,7 +101,7 @@ class CogMinecraft(commands.Cog, description="Minecraft commands"):
             await MessageType.error(interaction, f"Erreur lors du démarrage du serveur: \n{e}", ICON)
 
     @nextcord.slash_command(name="mc-stop", description="Arrêter le serveur Minecraft", guild_ids=Bot.GUILDS)
-    async def minecraft_stop(self, interaction: nextcord.Interaction, mc_name: str):
+    async def minecraft_stop(self, interaction: nextcord.Interaction, mc_name: str) -> None:
         """Arrêter le serveur Minecraft depuis son nom.
 
         Parameters
@@ -114,7 +130,7 @@ class CogMinecraft(commands.Cog, description="Minecraft commands"):
             await MessageType.error(interaction, f"Erreur lors de l'arrêt du serveur: \n{e}", ICON)
 
     @nextcord.slash_command(name="mc-restart", description="Redémarrer le serveur Minecraft", guild_ids=Bot.GUILDS)
-    async def minecraft_restart(self, interaction: nextcord.Interaction, mc_name: str):
+    async def minecraft_restart(self, interaction: nextcord.Interaction, mc_name: str) -> None:
         """Redémarrer le serveur Minecraft depuis son nom.
 
         Parameters

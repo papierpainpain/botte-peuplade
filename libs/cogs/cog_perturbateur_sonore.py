@@ -13,9 +13,36 @@ ICON = "🥳"
 
 class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
     """Perturbateur sonore
+
+    Attributes
+    ----------
+    bot: commands.Bot
+        Bot
+    voice: nextcord.VoiceClient
+        Client vocal
+    _logger: Logger
+        Logger de la classe
+    sound_bank: list
+        Liste des sons
+
+    Methods
+    -------
+    on_voice_state_update: Listener pour la connexion/déconnexion du bot
+    perturbateur_sonore: Perturbation sonore
+    connect_perturbateur: Connexion du perturbateur sonore
+    debrancher_mamie: Déconnexion du perturbateur sonore
+    rick_kayoux_ou_zomby: Demander à Rick Sanchez s'il préfère les KAYOUX ou les ZOMBY
     """
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: commands.Bot) -> None:
+        """Initialisation du Cog
+
+        Parameters
+        ----------
+        bot: commands.Bot
+            Bot
+        """
+
         self.bot: commands.Bot = bot
         self.voice = None
 
@@ -29,7 +56,7 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
         self._logger.debug(f"Sound bank: {self.sound_bank}")
 
     @commands.Cog.listener()
-    async def on_voice_state_update(self, member: nextcord.Member, before: nextcord.VoiceState, after: nextcord.VoiceState):
+    async def on_voice_state_update(self, member: nextcord.Member, before: nextcord.VoiceState, after: nextcord.VoiceState) -> None:
         """Listener pour la connexion/déconnexion du bot
 
         Parameters
@@ -40,10 +67,6 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
             Ancien état vocal
         after: nextcord.VoiceState
             Nouvel état vocal
-
-        Returns
-        -------
-        None
         """
 
         self._logger.debug(
@@ -79,17 +102,13 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
 
     # Scheduled task
     @tasks.loop(minutes=7.0)
-    async def perturbateur_sonore(self, voice: nextcord.VoiceClient = None):
+    async def perturbateur_sonore(self, voice: nextcord.VoiceClient = None) -> None:
         """Perturbation sonore
 
         Parameters
         ----------
         voice: nextcord.VoiceClient
             Client vocal
-
-        Returns
-        -------
-        None
         """
 
         self._logger.debug(f"Loop perturbateur_sonore called")
@@ -110,7 +129,8 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
         retries = 3
         while retries > 0:
             try:
-                voice.play(nextcord.FFmpegPCMAudio(f"libs/assets/musics/{song}"))
+                voice.play(nextcord.FFmpegPCMAudio(
+                    f"libs/assets/musics/{song}"))
                 self._logger.debug("Perturbation sonore terminée")
                 break
             except Exception as e:
@@ -122,7 +142,14 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
 
     @commands.is_owner()
     @nextcord.slash_command(name="connect-perturbateur", description="Connexion du perturbateur sonore", guild_ids=Bot.GUILDS)
-    async def connect_perturbateur(self, interaction: Interaction, voice_channel: nextcord.VoiceChannel = SlashOption(name="channel", description="Channel vocal", required=True), force: bool = SlashOption(name="force", description="Forcer la connexion", required=False, default=False)):
+    async def connect_perturbateur(
+        self,
+        interaction: Interaction,
+        voice_channel: nextcord.VoiceChannel = SlashOption(
+            name="channel", description="Channel vocal", required=True),
+        force: bool = SlashOption(
+            name="force", description="Forcer la connexion", required=False, default=False)
+    ) -> None:
         """Connexion du perturbateur sonore
 
         Parameters
@@ -133,10 +160,6 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
             Channel vocal
         force: bool
             Forcer la connexion
-
-        Returns
-        -------
-        None
         """
 
         if not self.voice or (self.voice and force):
@@ -156,17 +179,13 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
 
     @commands.is_owner()
     @nextcord.slash_command(name="débrancher-mamie", description="Déconnexion du perturbateur sonore", guild_ids=Bot.GUILDS)
-    async def debrancher_mamie(self, interaction: Interaction):
+    async def debrancher_mamie(self, interaction: Interaction) -> None:
         """Déconnexion du perturbateur sonore
 
         Parameters
         ----------
         interaction: nextcord.Interaction
             Interaction du slash command
-
-        Returns
-        -------
-        None
         """
 
         if self.voice:
@@ -180,17 +199,13 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
             await MessageType.error(interaction, f"Le bot n'est pas connecté", ICON)
 
     @nextcord.slash_command(name="rick-kayoux-ou-zomby", description="Demander à Rick Sanchez s'il préfère les KAYOUX ou les ZOMBY", guild_ids=Bot.GUILDS)
-    async def rick_kayoux_ou_zomby(self, interaction: Interaction):
+    async def rick_kayoux_ou_zomby(self, interaction: Interaction) -> None:
         """Demander à Rick Sanchez s'il préfère les KAYOUX ou les ZOMBY
 
         Parameters
         ----------
         interaction: nextcord.Interaction
             Interaction du slash command
-
-        Returns
-        -------
-        None
         """
 
         # Get the current voice channel of the user and connect the bot to it if it's not already connected
@@ -204,7 +219,8 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
         song = random.choice(["rick_kayoux.mp3", "rick_zomby.mp3"])
 
         # Play the sound
-        self.voice.play(nextcord.FFmpegPCMAudio("libs/assets/rick_sanchez/" + song))
+        self.voice.play(nextcord.FFmpegPCMAudio(
+            "libs/assets/rick_sanchez/" + song))
 
         await MessageType.info(interaction, f"Rick Sanchez a parlé", ICON)
 

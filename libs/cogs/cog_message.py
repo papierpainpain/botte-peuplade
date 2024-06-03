@@ -1,23 +1,51 @@
+import nextcord
 from nextcord.ext import commands
 
 from libs.utils.logger import create_logger
 
 
 class CogMessage(commands.Cog):
-    """
-    Listener pour les messages
+    """Listener pour les messages
 
     C'est la partie inutile du bot, mais c'est pas mal <3
+
+    Attributes
+    ----------
+    bot: commands.Bot
+        Bot
+    _logger: Logger
+        Logger de la classe
+
+    Methods
+    -------
+    on_message: Listener pour les messages
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot) -> None:
+        """Initialisation du Cog
+
+        Parameters
+        ----------
+        bot: commands.Bot
+            Bot
+
+        """
+
         self.bot = bot
 
         self._logger = create_logger(self.__class__.__name__)
         self._logger.info(f"{self.__class__.__name__} chargé")
 
     @commands.Cog.listener()
-    async def on_message(self, message):
+    async def on_message(self, message: nextcord.Message) -> None:
+        """Listener pour les messages
+
+        Parameters
+        ----------
+        message: nextcord.Message
+            Message
+        """
+
         self._logger.debug(f"Listener {self.on_message.__name__} called")
 
         if message.author == self.bot.user:
