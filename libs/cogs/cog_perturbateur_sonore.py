@@ -101,7 +101,7 @@ class CogPerturbateurSonore(commands.Cog, description="Commandes système"):
             self._logger.error(f"Erreur lors de la connexion/déconnexion: {e}")
 
     # Scheduled task
-    @tasks.loop(minutes=7.0)
+    @tasks.loop(minutes=5.0)
     async def perturbateur_sonore(self, voice: nextcord.VoiceClient = None) -> None:
         """Perturbation sonore
 
