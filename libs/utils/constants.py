@@ -32,6 +32,18 @@ class Blagues:
     TOKEN: str = os.getenv("BLAGUE_API_TOKEN")
 
 
+class ZorblortAPI:
+    """Classe des constantes de l'API de Zorblort
+
+    Attributes
+    ----------
+    HOST (str): URL de l'API de Zorblort
+    """
+
+    __slots__ = ()
+    HOST: str = os.getenv("ZORBLORT_API")
+
+
 class Minecraft:
     """Classe des constantes de Minecraft
 

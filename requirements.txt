@@ -3,3 +3,4 @@
 paramiko
 blagues-api
 requests
+ollama

@@ -2,7 +2,7 @@ import nextcord
 
 from libs.utils.constants import Colors
 
-DEFAULT_TIMEOUT = 30
+DEFAULT_TIMEOUT = None
 
 
 class MessageType():
@@ -24,7 +24,7 @@ class MessageType():
         embed = nextcord.Embed(
             title=f"{default_icon} | {message}", color=Colors.ERROR)
         message: nextcord.Message = await interaction.send(embed=embed)
-        return message, await message.delete(delay=delete_after)
+        return message, await message.delete(delay=delete_after) if delete_after else None
 
     async def info(interaction: nextcord.Interaction, message: str, default_icon: str = "📢", delete_after: int = DEFAULT_TIMEOUT):
         """
@@ -40,7 +40,7 @@ class MessageType():
         embed = nextcord.Embed(
             title=f"{default_icon} | {message}", color=Colors.INFO)
         message: nextcord.Message = await interaction.send(embed=embed)
-        return message, await message.delete(delay=delete_after)
+        return message, await message.delete(delay=delete_after) if delete_after else None
 
     async def warning(interaction: nextcord.Interaction, message: str, default_icon: str = "⚠️", delete_after: int = DEFAULT_TIMEOUT):
         """
@@ -56,4 +56,4 @@ class MessageType():
         embed = nextcord.Embed(
             title=f"{default_icon} | {message}", color=Colors.WARNING)
         message: nextcord.Message = await interaction.send(embed=embed)
-        return message, await message.delete(delay=delete_after)
+        return message, await message.delete(delay=delete_after) if delete_after else None

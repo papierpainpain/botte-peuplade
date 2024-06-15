@@ -1,5 +1,4 @@
-ci/*
-!ci/entrypoint.sh
-.gitignore
-.gitlab-ci.yml
-README.md
+.git*
+local.requirements.txt
+.dockerignore
+*.md

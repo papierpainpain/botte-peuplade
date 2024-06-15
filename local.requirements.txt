@@ -9,3 +9,4 @@ humanfriendly
 paramiko
 blagues-api
 requests
+ollama
